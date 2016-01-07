@@ -482,6 +482,6 @@ export class SchemaElement extends TypeDeclaration{
 
 export class DateTypeDeclaration extends TypeDeclaration{
     type="date"
-    $=[MetaModel.description("Value MUST be a string representation of a date as defined in RFC2616 Section 3.3 [RFC2616]. or according to specified date format"),MetaModel.declaresSubTypeOf("TypeDeclaration")]
+    $=[MetaModel.description("Value MUST be a string representation of a date as defined in RFC3339 or according to specified date format"),MetaModel.declaresSubTypeOf("TypeDeclaration")]
     dateFormat:Sys.DateFormatSpec;
 }
