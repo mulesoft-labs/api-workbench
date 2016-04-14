@@ -1,0 +1,318 @@
+'fileTypes': [
+  'raml'
+]
+'name': 'RAML'
+'patterns': [
+  {
+    'begin': '(^[ \\t]+)?(?=#)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.whitespace.comment.leading.yaml'
+    'end': '(?!\\G)'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+    ]
+  }
+  {
+    'match': '^---\\s*$'
+    'name': 'constant.language.document.yaml'
+  }
+  {
+    'match': '^\\.\\.\\.\\s*$'
+    'name': 'constant.language.document.yaml'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'constant.language.directive.yaml'
+      '2':
+        'name': 'constant.language.version.yaml'
+    'match': '^(%YAML\\s+(\\d+\\.\\d+))$'
+    'name': 'constant.other.directive.yaml'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'constant.language.directive.yaml'
+      '2':
+        'name': 'constant.language.tag.name.yaml'
+      '3':
+        'name': 'constant.language.tag.uri.yaml'
+    'match': '^((?:%TAG)(?:\\s+)(\\!(?:[^\\!]*\\!)?)(?:\\s+)([^$]*))$'
+    'name': 'constant.other.tag.directive.yaml'
+  }
+  {
+    'begin': '^(\\s*)(-\\s*)?([\'"]?(?:description|content)[\'"]?\\s*(:))\\s*(\\||>)'
+    'beginCaptures':
+      '2':
+        'name': 'punctuation.definition.entry.yaml'
+      '3':
+        'name': 'entity.name.function.yaml'
+      '4':
+        'name': 'punctuation.separator.key-value.yaml'
+    'end': '^(?!\\1\\s+)(?=\\s*(-|\\S+\\s*:|#))'
+    'name': 'markup.code.html.gfm'
+    'contentName': 'source.gfm'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z'
+        'name': 'comment.line.number-sign.yaml'
+      }
+      {
+        'include': 'source.gfm'
+      }
+    ]
+  }
+  {
+    'begin': '^\\s*(is)(:)\\s*(\\[)(.*)(\\])'
+    'beginCaptures':
+      '1':
+        'name': 'constant.character.method.yaml'
+      '2':
+        'name': 'punctuation.colon.key-value.yaml'
+      '3':
+        'name': 'string.single-quoted.yaml'
+      '4':
+        'name': 'punctuation.definition.comment.yaml'
+      '5':
+        'name': 'string.single-quoted.yaml'
+     'end': '$'
+     'name': 'meta.key-value'
+  }
+  {
+    'begin': '^\\s*(baseUri)(:)'
+    'beginCaptures':
+      '1':
+        'name': 'constant.character.method.yaml'
+      '2':
+        'name': 'punctuation.colon.key-value.yaml'
+    'end': '$'
+    'name': 'meta.key-value'
+    'patterns': [
+      {
+        'begin': '(\\{)(\\w*)'
+        'beginCaptures':
+          '1':
+            'name': 'punctuation.definition.comment.yaml'
+          '2':
+            'name': 'string.single-quoted.yaml'
+        'end': '\\}'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+      }
+    ]
+  }
+  {
+    'begin': '^[ \\t]*(\\/)([^\\{:]*)(?:(\\{)([^\\}]*)(\\}))?([^\\{:]*)?(?:(\\{)([^\\}]*)(\\}))?([^\\{:]*)?(?:(\\{)([^\\}]*)(\\}))?([^\\{:]*)(:)'
+    'beginCaptures':
+      '1':
+        'name': 'entity.name.tag.yaml'
+      '2':
+        'name': 'entity.name.tag.yaml'
+      '3':
+        'name': 'string.single-quoted.yaml'
+      '4':
+        'name': 'punctuation.definition.comment.yaml'
+      '5':
+        'name': 'string.single-quoted.yaml'
+      '6':
+        'name': 'entity.name.tag.yaml'
+      '7':
+        'name': 'string.single-quoted.yaml'
+      '8':
+        'name': 'punctuation.definition.comment.yaml'
+      '9':
+        'name': 'string.single-quoted.yaml'
+      '10':
+        'name': 'entity.name.tag.yaml'
+      '11':
+        'name': 'string.single-quoted.yaml'
+      '12':
+        'name': 'punctuation.definition.comment.yaml'
+      '13':
+        'name': 'string.single-quoted.yaml'
+      '14':
+        'name': 'entity.name.tag.yaml'
+    'end': '$'
+    'name': 'meta.resource'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+      {
+        'include': '#scalars'
+      }
+    ]
+  }
+  {
+    'begin': '^[ \\t]*((\\d)+)(:)((?:(\\![\\w\\!]+)\\s+?)?|\\Z|(?#))'
+    'beginCaptures':
+      '1':
+        'name': 'support.type.function.yaml'
+      '2':
+        'name': 'support.type.function.yaml'
+      '3':
+        'name': 'support.type.function.yaml'
+    'end': '$'
+    'name': 'meta.resource'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+      {
+        'include': '#scalars'
+      }
+    ]
+  }
+  {
+    'begin': '^[ \\t]*(get|post|put|patch|head|delete|options|trace|connect)(:)((?:(\\![\\w\\!]+)\\s+?)?|\\Z|(?#))'
+    'beginCaptures':
+      '1':
+        'name': 'constant.character.method.yaml'
+      '2':
+        'name': 'punctuation.colon.key-value.yaml'
+      '3':
+        'name': 'support.type.tag.yaml'
+    'end': '$'
+    'name': 'meta.method'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+      {
+        'include': '#scalars'
+      }
+    ]
+  }
+  {
+    'begin': '^[ \\t]*((?!\\/)[^:]+)(:)(?:\\s*((\\!include)|\Z))?'
+    'beginCaptures':
+      '1':
+        'name': 'entity.name.function.yaml'
+      '2':
+        'name': 'punctuation.colon.key-value.yaml'
+      '3':
+        'name': 'punctuation.definition.comment.yaml'
+      '4':
+        'name': 'constant.character.method.yaml'
+    'end': '$'
+    'name': 'meta.key-value'
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+
+      {
+        'include': '#scalars'
+      }
+    ]
+  }
+]
+'repository':
+  'scalars':
+    'patterns': [
+      {
+        'begin': '#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.yaml'
+        'end': '\\Z|\\n'
+        'name': 'comment.line.number-sign.yaml'
+      }
+      {
+        'include': '#boolean'
+      }
+      {
+        'include': '#float'
+      }
+      {
+        'include': '#int'
+      }
+      {
+        'include': '#single-quote'
+      }
+      {
+        'include': '#double-quote'
+      }
+      {
+        'include': '#unquoted'
+      }
+    ]
+    'repository':
+      'boolean':
+        'captures':
+          '1':
+            'name': 'constant.language.boolean.yaml'
+        'match': '\\b(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)\\b'
+      'double-quote':
+        'captures':
+          '1':
+            'name': 'punctuation.definition.string.begin.yaml'
+          '2':
+            'name': 'string.double-quoted.yaml'
+          '3':
+            'name': 'punctuation.definition.string.end.yaml'
+        'match': '(")([^"]*)(")'
+      'float':
+        'captures':
+          '1':
+            'name': 'constant.numeric.yaml'
+        'match': '([-+]?([0-9][0-9_]*)?\\.[0-9.]*([eE][-+][0-9]+)?)|([-+]?[0-9][0-9_]*(:[0-5]?[0-9])+\\.[0-9_]*)|([-+]?\\.(inf|Inf|INF))|(\\.(nan|NaN|NAN))'
+      'int':
+        'captures':
+          '1':
+            'name': 'constant.numeric.yaml'
+        'match': '([-+]?(0|[1-9][0-9_]*))'
+      'single-quote':
+        'captures':
+          '1':
+            'name': 'punctuation.definition.string.begin.yaml'
+          '2':
+            'name': 'string.single-quoted.yaml'
+          '3':
+            'name': 'punctuation.definition.string.end.yaml'
+        'match': '(\')([^\']*)(\')'
+      'unquoted':
+        'captures':
+          '1':
+            'name': 'string.unquoted.yaml'
+        'match': '(.*?)(?=$)'
+  'uri':
+    'captures':
+      '1':
+        'name': 'markup.underline.link.yaml'
+    'match': '(.*?)(?=$)'
+    'name': 'meta.link.inline.markdown'
+'scopeName': 'source.raml'
