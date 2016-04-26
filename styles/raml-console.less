@@ -1,0 +1,32 @@
+@import "ui-variables";
+@import "syntax-variables";
+
+.raml-console {
+  height: 100%;
+
+  select.form-control {
+    color: @text-color;
+    border-color: @button-border-color;
+    background-color: @button-background-color;
+
+    &:hover,
+    &:focus {
+      box-shadow: none;
+      background-color: @button-background-color-hover;
+    }
+  }
+
+  atom-text-editor:not([mini]) {
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/**
+ * Override tooltip styles that aren't correct for me.
+ */
+.raml-console-tooltip {
+  max-width: 480px;
+  white-space: normal;
+}
