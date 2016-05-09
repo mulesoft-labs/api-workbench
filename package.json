@@ -1,0 +1,84 @@
+{
+  "name": "api-workbench",
+  "version": "0.8.27",
+  "private": true,
+  "main": "main.js",
+  "repository": "https://github.com/mulesoft/api-workbench",
+  "activationCommands": {},
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "package-deps": [
+    "linter"
+  ],
+  "providedServices": {
+    "autocomplete.provider": {
+      "versions": {
+        "2.0.0": "getProvider"
+      }
+    },
+    "linter": {
+      "versions": {
+        "1.0.0": "provideLinter"
+      }
+    }
+  },
+  "consumedServices": {
+    "linter-plus-self": {
+      "versions": {
+        "0.1.0": "consumeLinter"
+      }
+    }
+  },
+  "dependencies": {
+    "abnf": "0.0.5",
+    "arrify": "^1.0.0",
+    "atom-package-deps": "^2.1.3",
+    "atom-space-pen-views": "^2.0.5",
+    "atom-ui-lib": "0.0.4",
+    "basarat-text-buffer": "^4.1.5",
+    "base64url": "^1.0.4",
+    "change-case": "^2.2.0",
+    "classnames": "^2.0.0",
+    "client-oauth2": "^0.3.0",
+    "concat-stream": "^1.5.0",
+    "emissary": "^1.3.3",
+    "esutils": "^2.0.2",
+    "glob-expand": "^0.1.0",
+    "html-entities": "^1.1.2",
+    "htmlparser2": "^3.8.2",
+    "http-response-object": "^1.0.1",
+    "invariant": "^2.0.0",
+    "jquery": "^2.1.3",
+    "js-yaml": "^3.3.0",
+    "json-schema-compatibility": "^1.0.1",
+    "json-stable-stringify": "^1.0.0",
+    "jsonix": "^2.3.0",
+    "know-your-http-well": "~0.2.0",
+    "loophole": "^1.0.0",
+    "lrucache": "^0.2.0",
+    "marked": "^0.3.3",
+    "mime": "^1.3.4",
+    "mkdirp": "^0.5.0",
+    "node-libs-browser": "^0.5.2",
+    "popsicle": "^3.2.2",
+    "pretty-data": "^0.40.0",
+    "react": "^0.13.2",
+    "react-pure-render": "^1.0.1",
+    "request": "^2.53.0",
+    "simplet": "^0.2.1",
+    "source-map": "^0.4.2",
+    "then-request": "^2.1.1",
+    "traverse": "^0.6.6",
+    "underscore": "^1.8.2",
+    "w3c-schemas": "^1.2.1",
+    "wrench": "^1.5.8",
+    "xhr2": "0.1.3",
+    "xmldom": "0.1.19",
+    "xmlhttprequest": "^1.7.0",
+    "xtend": "^4.0.1",
+    "yaml-ast-parser": "0.0.26",
+    "z-schema": "^3.9.1",
+    "raml-1-parser": "0.2.6"
+  }
+}
