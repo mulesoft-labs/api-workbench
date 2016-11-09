@@ -760,7 +760,7 @@ class MarkdownFieldUI extends UI.AtomEditorElement implements UI.IField<any>{
         this.setStyle("border-radius","2px");
         this.setStyle("font-size","1.15em")
         this.setStyle("border-color","rgba(0,0,0,0.2)");
-        this.setGrammar('source.gfm');
+        this.setGrammar('source.mdcustom');
     }
 
     setLabelWidth(){
