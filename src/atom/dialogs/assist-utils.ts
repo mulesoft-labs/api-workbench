@@ -29,6 +29,7 @@ import tooltip=require("../core/tooltip-manager")
 import linterUI = require("../core/linter-ui")
 
 import editorTools = require("../editor-tools/editor-tools")
+import ramlServer = require("raml-language-server")
 // import {universeHelpers} from "raml-1-parser/dist/index";
 
 interface QuickFix{
@@ -423,6 +424,29 @@ export function getActiveEditor() {
         return <AtomCore.IEditor>editorTools.aquireManager().getCurrentEditor()
 
     return null
+}
+
+export function gotoDeclaration(){
+    var editor=getActiveEditor();
+    if (!editor) return;
+
+    let position = editor.getCursorBufferPosition();
+    let offset = editor.getBuffer().characterIndexForPosition(position);
+    let path = editor.getPath();
+
+    ramlServer.getNodeClientConnection().openDeclaration(path, offset).then(locations=>{
+        if (!locations) return;
+
+        atom.workspace.open(locations[0].uri,{}).then(x=>{
+
+            let activeEditor = getActiveEditor();
+
+            var p1 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.start);
+            var p2 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.end);
+
+            activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
+        });
+    })
 }
 
 // export class MoveToNewFileDialog{
