@@ -30,6 +30,7 @@ import linterUI = require("../core/linter-ui")
 
 import editorTools = require("../editor-tools/editor-tools")
 import ramlServer = require("raml-language-server")
+import {ILocation} from "raml-language-server/dist/common/typeInterfaces";
 // import {universeHelpers} from "raml-1-parser/dist/index";
 
 interface QuickFix{
@@ -719,87 +720,94 @@ var getKeyValue = function (offset, txt) {
 
 
 
-// export function findUsagesImpl(f:(x:hl.IHighLevelNode,t:hl.IParseResult[])=>any=display){
-//     var ed=getActiveEditor();
-//     if (ed){
-//         if (path.extname(ed.getPath())=='.raml'){
-//             var request={editor:ed,bufferPosition:ed.getCursorBufferPosition()};
-//             var p=request.editor.getPath();
-//             var prj=rp.project.createProject(path.dirname(p));
-//             var unit=prj.unit(path.basename(p));
-//             var offset=request.editor.getBuffer().characterIndexForPosition(request.bufferPosition);
-//             var text=request.editor.getBuffer().getText();
-//             unit.updateContent(text);
-//             var decl=search.findUsages(unit,offset);
-//             if (decl.node) {
-//                 f(decl.node, decl.results);
-//             }
-//         }
-//     }
-// }
-// export function findUsages(){
-//     findUsagesImpl(display);
-// }
-// class SearchResultView extends SpacePenViews.ScrollView {
-//
-//
-//     scriptPath:string;
-//     constructor(private query:string,private _result:hl.IParseResult[] ) {
-//         super();
-//     }
-//     initialize () {
-//         super.initialize.apply(this, arguments)
-//         return true;
-//     }
-//
-//     static content (): HTMLElement {
-//         return this.div({ class: 'raml-console pane-item', tabindex: -1 })
-//     }
-//
-//     isAttached=false;
-//
-//     attached (): void {
-//         if (this.isAttached) {
-//             return
-//         }
-//         this.load();
-//         this.isAttached = true
-//     }
-//     panel:any;
-//
-//     setInput(query:string,_result:hl.IParseResult[]){
-//         this.query=query;
-//         this._result=_result;
-//         this.load();
-//     }
-//     load(){
-//         var section=UI.section("Find usages for "+this.query,UI.Icon.SEARCH)
-//         var view=UI.list(this._result,x=>{
-//             var p1 = getActiveEditor().getBuffer().positionForCharacterIndex(x.getLowLevelStart());
-//
-//             var res= UI.hc(UI.a(x.id(),y=>{
-//                openPropertyNode(getActiveEditor(),x);
-//            }),UI.label(x.lowLevel().unit().path()+" line:",UI.Icon.NONE,UI.TextClasses.SUBTLE).pad(5,5),
-//            UI.label(""+p1.row,UI.Icon.NONE,UI.TextClasses.SUCCESS))
-//            return res;
-//         });
-//         view.setStyle("max-height","400px");
-//         section.addChild(view);
-//         section.addChild(UI.button("Close",UI.ButtonSizes.SMALL,UI.ButtonHighlights.PRIMARY,UI.Icon.NONE,x=>{this.panel.destroy();sv=null}))
-//         this.html(section.renderUI());
-//     }
-// }
-// var sv:SearchResultView;
+export function findUsagesImpl(renderer:(t:ILocation[])=>any=display){
+    var editor=getActiveEditor();
 
-// function display(query:hl.IHighLevelNode, n:hl.IParseResult[]){
-//     if (sv){
-//         sv.setInput(query.name(),n);
-//     }
-//     else {
-//         sv = new SearchResultView(query.name() + ":" + query.definition().nameId(), n)
-//         sv.panel = (<any>atom.workspace).addBottomPanel({item: sv});
-//     }
-// }
+    let position = editor.getCursorBufferPosition();
+    let offset = editor.getBuffer().characterIndexForPosition(position);
+    let path = editor.getPath();
+
+    ramlServer.getNodeClientConnection().findReferences(path, offset).then(locations=>{
+        if (!locations) return;
+
+        renderer(locations);
+    })
+}
+
+function display(n:ILocation[]){
+    if (sv){
+        sv.setInput(n);
+    }
+    else {
+        sv = new SearchResultView(n)
+        sv.panel = (<any>atom.workspace).addBottomPanel({item: sv});
+    }
+}
+
+export function findUsages(){
+    findUsagesImpl(display);
+}
+
+class SearchResultView extends SpacePenViews.ScrollView {
+
+
+    scriptPath:string;
+    constructor(private _result:ILocation[] ) {
+        super();
+    }
+    initialize () {
+        super.initialize.apply(this, arguments)
+        return true;
+    }
+
+    static content (): HTMLElement {
+        return this.div({ class: 'raml-console pane-item', tabindex: -1 })
+    }
+
+    isAttached=false;
+
+    attached (): void {
+        if (this.isAttached) {
+            return
+        }
+        this.load();
+        this.isAttached = true
+    }
+    panel:any;
+
+    setInput(_result:ILocation[]){
+        this._result=_result;
+        this.load();
+    }
+
+    load(){
+        var section=UI.section("References",UI.Icon.SEARCH)
+        var view=UI.list(this._result,location=>{
+            var p1 = getActiveEditor().getBuffer().positionForCharacterIndex(location.range.start);
+
+            var res= UI.hc(UI.a(location.uri,y=>{
+                atom.workspace.open(location.uri,{}).then(x=>{
+
+                    let activeEditor = getActiveEditor();
+
+                    var p1 = activeEditor.getBuffer().positionForCharacterIndex(location.range.start);
+                    var p2 = activeEditor.getBuffer().positionForCharacterIndex(location.range.end);
+
+                    activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
+                });
+           }),UI.label(" line:",UI.Icon.NONE,UI.TextClasses.SUBTLE).pad(5,5),
+           UI.label(""+p1.row,UI.Icon.NONE,UI.TextClasses.SUCCESS))
+           return res;
+        });
+        view.setStyle("max-height","400px");
+        section.addChild(view);
+        section.addChild(UI.button("Close",UI.ButtonSizes.SMALL,UI.ButtonHighlights.PRIMARY,UI.Icon.NONE,x=>{this.panel.destroy();sv=null}))
+        this.html(section.renderUI());
+    }
+}
+var sv:SearchResultView;
+
+
 // //TODO REFACTOR COMMON LOGIC TO COFE
 // var openPropertyNode = function (ed:AtomCore.IEditor, t:hl.IParseResult) {
 //     var p1 = ed.getBuffer().positionForCharacterIndex(t.getLowLevelStart());

@@ -29,7 +29,7 @@ module package_entry_point {
                     'api-workbench:editor-tools':editorTools.initEditorTools,
                     /*'api-workbench:console': Console.toggle,*/
                     'api-workbench:go-to-definition':decl.gotoDeclaration,
-                    /*'api-workbench:find-usages':decl.findUsages,*/
+                    'api-workbench:find-usages':decl.findUsages,
                     'api-workbench:quick-outline':quickOutline.show,
                     'api-workbench:quick-commands': quickCommands.showCommands,
                     /*'api-workbench:rename':decl.renameRAMLElement,*/
