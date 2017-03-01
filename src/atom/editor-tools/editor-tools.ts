@@ -297,12 +297,12 @@ class EditorManager{
             }
         });
         //updating ast node on position change
-        cedit.getLastCursor().onDidChangePosition(x=> {
-            if (!this.fire) return;
-            this.positionUpdated(buffer.characterIndexForPosition(cedit.getCursorBufferPosition()));
-            this.scheduleViewsUpdate();
-        });
-        this.addListenersOnMove(cedit);
+        // cedit.getLastCursor().onDidChangePosition(x=> {
+        //     if (!this.fire) return;
+        //     this.positionUpdated(buffer.characterIndexForPosition(cedit.getCursorBufferPosition()));
+        //     this.scheduleViewsUpdate();
+        // });
+        // this.addListenersOnMove(cedit);
         (<any>this.currentEditor).patched = true;
     }
 

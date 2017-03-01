@@ -23,16 +23,34 @@ import pair = require("../../util/pair");
 // import outlineCommon = require("./outline-common")
 import ramlServer = require("raml-language-server");
 
+export function getActiveEditor() {
+    var activeEditor = atom.workspace.getActiveTextEditor()
+    if (activeEditor) {
+        return activeEditor
+    }
+
+    if (editorTools.aquireManager())
+        return <AtomCore.IEditor>editorTools.aquireManager().getCurrentEditor()
+
+    return null
+}
+
 export class RamlOutline extends SC.Scrollable {
     private _rs: UI.TabFolder;
 
     private createTree(structure:{[categoryName: string]: ramlServer.StructureNodeJSON}/*p: hl.IParseResult*/) {
         this._rs = createTree(structure, sender => {
-            // if(editorTools.aquireManager()._details && sender.selection && sender.selection.elements && this.fire == true){
-            //     if (sender.selection.elements.length>0&&sender.selection.elements[0]) {
-            //         editorTools.aquireManager().setSelectedNode(sender.selection.elements[0].getSource());
-            //     }
-            // }
+            if(sender.selection && sender.selection.elements && this.fire == true){
+                if (sender.selection.elements.length>0&&sender.selection.elements[0]) {
+
+                    let activeEditor = getActiveEditor();
+
+                    var p1 = activeEditor.getBuffer().positionForCharacterIndex(sender.selection.elements[0].start);
+                    var p2 = activeEditor.getBuffer().positionForCharacterIndex(sender.selection.elements[0].end);
+
+                    activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
+                }
+            }
         });
         this._viewers = [];
 
@@ -59,32 +77,36 @@ export class RamlOutline extends SC.Scrollable {
 
     private fire : boolean = true;
 
-    // private getNodePType(node: hl.IHighLevelNode) {
-    //     while (node.parent() &&node.parent().parent()) {
-    //         node = node.parent();
-    //     }
-    //     return getNodeType(node);
-    // }
+    private getNodePType(node: ramlServer.StructureNodeJSON) {
+        node.category
 
-    // private _selectedNode: hl.IHighLevelNode;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.ResourcesCategory]) return 0;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.SchemasAndTypesCategory]) return 1;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.ResourceTypesAndTraitsCategory]) return 2;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory]) return 3;
 
-    // setSelection(node: hl.IHighLevelNode) {
-    //     //if (this._selectedNode == node) return;
-    //     this._selectedNode = node;
-    //
-    //     this.fire = false;
-    //     try {
-    //         var index = this.getNodePType(node);
-    //         var viewer = this._viewers[index];
-    //
-    //         if (viewer != null) {
-    //             viewer.setSelection(node);
-    //             this._rs.setSelectedIndex(index);
-    //         }
-    //     }finally {
-    //         this.fire = true;
-    //     }
-    // }
+        return 3;
+    }
+
+    private _selectedNode: ramlServer.StructureNodeJSON;
+
+    setSelection(node: ramlServer.StructureNodeJSON) {
+        //if (this._selectedNode == node) return;
+        this._selectedNode = node;
+
+        this.fire = false;
+        try {
+            var index = this.getNodePType(node);
+            var viewer = this._viewers[index];
+
+            if (viewer != null) {
+                viewer.setSelection(node);
+                this._rs.setSelectedIndex(index);
+            }
+        }finally {
+            this.fire = true;
+        }
+    }
 
     // unit: hl.IHighLevelNode;
 
