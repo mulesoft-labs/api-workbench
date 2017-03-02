@@ -159,6 +159,11 @@ export function getSuggestions(request: AtomCompletionRequest) {
     let editor = request.editor;
     let offset = editor.getBuffer().characterIndexForPosition(request.bufferPosition);
 
+    ramlServer.getNodeClientConnection().documentChanged({
+        uri: request.editor.getPath(),
+        text: editor.getText()
+    });
+
     return ramlServer.getNodeClientConnection().getSuggestions(request.editor.getPath(), offset);
     // return suggestions.suggest(editorState, new FSProvider());
 }

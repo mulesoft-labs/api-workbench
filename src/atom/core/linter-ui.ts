@@ -12,6 +12,7 @@ var TextBuffer = require("basarat-text-buffer");
 
 import editorManager = require("./editorManager");
 import editorTools = require("../editor-tools/editor-tools");
+import ramlServer = require("raml-language-server")
 
 export var grammarScopes = ['source.raml'];
 
@@ -287,4 +288,29 @@ export function lint(textEditor: AtomCore.IEditor): Promise<any[]> {
     });
     
     return promise;
+}
+
+function addListenersToEditor(editor) {
+    let currentBuffer = editor.getBuffer();
+    currentBuffer.onDidChange(x => {
+        try {
+            ramlServer.getNodeClientConnection().debug("Change detected", "linter-ui", "addListenersToEditor")
+            ramlServer.getNodeClientConnection().documentChanged({
+                    uri: currentBuffer.getPath(),
+                    text: currentBuffer.getText()
+            });
+
+        } catch (e){
+            console.log(e);
+        }
+    });
+}
+
+function addListenersToWorkspace() {
+    atom.workspace.onDidChangeActivePaneItem(e => {
+        let editor = atom.workspace.getActiveTextEditor();
+        if (editor) {
+            addListenersToEditor(editor)
+        }
+    });
 }

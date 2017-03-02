@@ -116,6 +116,13 @@ export class RamlOutline extends SC.Scrollable {
         this._children=[];
         this.unitPath = unitPath;
 
+        let activeEditor = getActiveEditor();
+
+        ramlServer.getNodeClientConnection().documentChanged({
+            uri: unitPath,
+            text: activeEditor.getText()
+        });
+
         let structurePromise = ramlServer.getNodeClientConnection().getStructure(unitPath);
         if (structurePromise) {
             structurePromise.then(structure=>{
