@@ -43,6 +43,12 @@ export class MoveToNewFileDialog {
         var errorLabel = UI.label("Please enter destination file path", UI.Icon.BUG, UI.TextClasses.ERROR, UI.HighLightClasses.NONE);
         vc.addChild(UI.vc(errorLabel));
         vc.addChild(UI.label("Please enter destination path"));
+
+        var okButton = UI.button("Move", UI.ButtonSizes.NORMAL, UI.ButtonHighlights.SUCCESS, UI.Icon.NONE, x=> {
+            zz.destroy();
+            this.callback(this.destination);
+        });
+        
         var txt = UI.texfField("", "", x=> {
             if (!txt) {
                 return;
@@ -100,10 +106,7 @@ export class MoveToNewFileDialog {
         buttonBar.addChild(UI.button("Cancel", UI.ButtonSizes.NORMAL, UI.ButtonHighlights.NO_HIGHLIGHT, UI.Icon.NONE, x=> {
             zz.destroy()
         }).margin(10, 10))
-        var okButton = UI.button("Move", UI.ButtonSizes.NORMAL, UI.ButtonHighlights.SUCCESS, UI.Icon.NONE, x=> {
-            zz.destroy();
-            this.callback(this.destination);
-        });
+        
         okButton.setDisabled(true)
         buttonBar.addChild(okButton);
         vc.addChild(buttonBar)
