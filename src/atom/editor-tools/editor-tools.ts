@@ -310,7 +310,12 @@ class EditorManager{
     private addListenersForStructure() {
         ramlServer.getNodeClientConnection().onStructureReport(report=>{
 
-            ramlServer.getNodeClientConnection().debug("Got new structure report", "EditorManager", "addListenersForStructure");
+            let categoryNames = []
+            for(let categoryName in report.structure) categoryNames.push(categoryName);
+
+            let categoryNamesString = categoryNames.join();
+            ramlServer.getNodeClientConnection().debug("Got new structure report with categories "
+                + categoryNamesString, "EditorManager", "addListenersForStructure");
 
             var editor = atom.workspace.getActiveTextEditor();
 
