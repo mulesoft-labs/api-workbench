@@ -12,6 +12,9 @@ import pair = require("../../util/pair");
 // import detailsView=require("./details-view")
 import outlineView=require("./outline-view")
 import UI=require("atom-ui-lib")
+import ramlServer = require("raml-language-server");
+
+
 var _bmc : number = 0;
 function benchmark(func?: string): void {
     var t0 = new Date().getTime();
@@ -61,12 +64,13 @@ class EditorManager{
 
     constructor(display: boolean = true) {
         manager = window["manager"] = this;
+
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
+
         this.updateEverything(display);
         this.addAutoCloseListener();
 
-
-
+        this.addListenersForStructure();
     }
 
     private updateCount: number=0;
@@ -265,9 +269,11 @@ class EditorManager{
 
         if (this.opened == false && display) this.display();
 
-        if (!(<any>editor).patched) {
-           this.addListenersToEditor( editor);
-        }
+        //we are not listening to the editor changes any more,
+        //instead we are listening to the reports of the server that something is avilable, like the structure
+        // if (!(<any>editor).patched) {
+        //    this.addListenersToEditor( editor);
+        // }
 
         this.reparseAST();
 
@@ -282,16 +288,11 @@ class EditorManager{
         var buffer = cedit.getBuffer();
         buffer.onDidChange(x => {
             try {
-                var t0=new Date().getMilliseconds();
                 this.reparseAST();
                 var pos = buffer.characterIndexForPosition(cedit.getCursorBufferPosition());
                 this.positionUpdated(pos);
                 this.scheduleViewsUpdate();
 
-                var t1=new Date().getMilliseconds();
-                if (this.performanceDebug) {
-                    console.log("Change take:" + (t1 - t0));
-                }
             } catch (e){
                 console.log(e);
             }
@@ -304,6 +305,21 @@ class EditorManager{
         // });
         // this.addListenersOnMove(cedit);
         (<any>this.currentEditor).patched = true;
+    }
+
+    private addListenersForStructure() {
+        ramlServer.getNodeClientConnection().onStructureReport(report=>{
+
+            ramlServer.getNodeClientConnection().debug("Got new structure report", "EditorManager", "addListenersForStructure");
+
+            var editor = atom.workspace.getActiveTextEditor();
+
+            if(!editor || !this.isRaml(editor)) {
+                return;
+            }
+
+            this.updateOutline();
+        })
     }
 
     private addListenersOnMove(cedit) {
@@ -410,20 +426,15 @@ class EditorManager{
             console.log("Views update:" + (d1 - ds));
         }
     }
+
     _cleanOutline=false;
 
     updateOutline() {
-        //var cNode = this.getCurrentNode();
-        var ds=new Date().getMilliseconds();
+
+        ramlServer.getNodeClientConnection().debug("Updating outline", "EditorManager", "updateOutline");
 
         if (this._view) {
             this.getOrCreateView().setUnit(manager.unitPath);
-            //this.getOrCreateView().setUnit(manager.ast);
-            // this.getOrCreateView().setSelection(cNode);
-        }
-        var d1=new Date().getMilliseconds();
-        if (this.performanceDebug) {
-            console.log("Outline update:" + (d1 - ds));
         }
     }
 
