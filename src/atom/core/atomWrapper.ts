@@ -39,6 +39,10 @@ export class Workspace {
     open(path, args) {
         atom.workspace.open(path, args);
     }
+
+    observeTextEditors(callback : (editor:ITextEditor)=>void) {
+        atom.workspace.observeTextEditors(callback);
+    }
 }
 
 export function open(pathsToOpen) {
@@ -95,6 +99,8 @@ export interface  ITextEditor {
     setText(text);
 
     getCursorBufferPosition();
+
+    onDidDestroy(callback:()=>void);
 }
 
 export interface  IEditor {

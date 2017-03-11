@@ -67,6 +67,15 @@ class EditorManager{
 
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
 
+        atom.workspace.observeTextEditors(editor=>{
+            editor.onDidDestroy(()=>{
+
+                let path = editor.getPath();
+
+                ramlServer.getNodeClientConnection().documentClosed(path);
+            })
+        })
+
         this.updateEverything(display);
         this.addAutoCloseListener();
 
