@@ -132,6 +132,9 @@ export class RamlOutline extends SC.Scrollable {
                 (<any>this).addClass('raml-outline');
                 this.addChild(this._rs);
                 this.html(this.innerRenderUI());
+            }).catch(error=>{
+                //ignoring, the error is already reported to the log, and we dont need to display
+                //it to user in other way
             })
         }
 
