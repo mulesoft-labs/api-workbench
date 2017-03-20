@@ -20,7 +20,7 @@ class AddNewResourceStateCalculator extends contextActions.CommonASTStateCalcula
         var editor=this.getEditor()
         if (!editor) return null
 
-        if (path.extname(editor.getPath()) != '.raml') return null
+        if (path.extname(editor.getPath() || '') != '.raml') return null
 
         var generalState = this.getGeneralState()
         if (!generalState) return null;
@@ -48,7 +48,7 @@ class CreateNewAPIStateCalculator extends contextActions.CommonASTStateCalculato
         var editor=this.getEditor()
         if (!editor) return null
 
-        if (path.extname(editor.getPath()) != '.raml') return null
+        if (path.extname(editor.getPath() || '') != '.raml') return null
 
         var text = editor.getText().trim()
         if (text != "") return null

@@ -816,6 +816,14 @@ export function gotoDeclaration(){
             unit.updateContent(text);
             var decl=search.findDeclaration(unit,offset);
 
+            if(!decl) {
+                var canBeReference = search.deepFindNode(unit.highLevel(), offset,offset, false);
+                
+                var parentProperty = canBeReference && canBeReference.parent() && canBeReference.parent().property();
+
+                decl = universeHelpers.isUsesProperty(parentProperty) && search.findDeclaration(unit, offset, search.LocationKind.PATH_COMPLETION);
+            }
+
             if(decl) {
                 if(!(<any>decl).absolutePath){
                     openLowLevelNode(ed,(<hl.IParseResult>decl).lowLevel());

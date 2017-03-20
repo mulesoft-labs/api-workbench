@@ -156,7 +156,19 @@ export function getSuggestions(request: AtomCompletionRequest): suggestions.Sugg
     try {
         var editorState = new AtomEditorState(request.editor, request);
 
-        return suggestions.suggest(editorState, new FSProvider());
+        var result = suggestions.suggest(editorState, new FSProvider());
+
+        result.forEach(suggestion => {
+            if(suggestion.prefix !== undefined) {
+                delete suggestion.prefix;
+        
+                (<any>suggestion).replacementPrefix = suggestion.prefix;
+        
+                delete suggestion.prefix;
+            }
+        });
+
+        return result;
 
     }finally{
         if (editorTools.aquireManager()){
