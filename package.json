@@ -70,7 +70,7 @@
     "yaml-ast-parser": "0.0.31",
     "raml-1-parser": "1.1.18",
     "raml-suggestions": "0.0.29",
-    "raml-actions" : "0.0.14",
+    "raml-actions" : "0.0.15",
     "raml-outline" : "0.0.5"
   },
   "devDependencies": {
