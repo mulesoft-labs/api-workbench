@@ -1246,7 +1246,7 @@ class MethodDemo extends PureComponent<NodeProps<RamlMethod>, {}> {
       (<RamlBody[]>node.body()).forEach((body: any) => {
         var name = body.name();
         
-        var example = body.example() || body.examples()[0];
+        var example = (body.example && body.example()) || (body.examples && body.examples() && body.examples()[0]);
 
         example && (this.props.state.bodies[name] = example.value());
       });
