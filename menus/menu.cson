@@ -27,14 +27,6 @@
       command: 'api-workbench:rename'
     },
     {
-          label: 'Relaunch validation',
-          command: 'api-workbench:revalidate'
-    },
-    {
-      label: 'Select current node',
-      command: 'api-workbench:select-node'
-    },
-    {
       label: 'Find usages',
       command:  'api-workbench:find-usages'
     }
