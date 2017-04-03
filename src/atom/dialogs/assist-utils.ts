@@ -628,6 +628,58 @@ export function applyChangedDocuments(changedDocuments : ramlServer.IChangedDocu
 }
 
 /**
+ * Tries to detect the name/symbol at position.
+ * In practise it is impossible to do properly in all cases unless having AST at hands
+ * or making the server to do this, but MS LSP does not have an interface for this.
+ *
+ * @param contents
+ * @param offset
+ */
+function findCurrentName(contents: string, offset: number) : string {
+    //we cant use alpha-numeric detection due to potential non-english alphabets.
+    //so we have to defined some stop characters and expand the list when a bug case is detected
+    const stopCharacters: string[] = [
+        "\r", "\n", "[", "]", ":", ".", ",", " ", "\t", "{", "}", "'", "'", "\""
+    ]
+
+    let beginning = 0;
+
+    for(let currentOffset = offset - 1; currentOffset >= 0; currentOffset--){
+        let currentChar = contents.charAt(currentOffset);
+
+        let found = false;
+        for (let stopChar of stopCharacters) {
+            if (currentChar == stopChar) {
+                beginning = currentOffset + 1;
+                found = true;
+                break;
+            }
+        }
+
+        if (found) break;
+    }
+    
+    let end = contents.length;
+
+    for(let currentOffset = offset; currentOffset < contents.length; currentOffset++){
+        let currentChar = contents.charAt(currentOffset);
+
+        let found = false;
+        for (let stopChar of stopCharacters) {
+            if (currentChar == stopChar) {
+                end = currentOffset;
+                found = true;
+                break;
+            }
+        }
+
+        if (found) break;
+    }
+
+    return contents.substring(beginning, end);
+}
+
+/**
  * Activates renaming for current active editor and cursor position
  */
 export function renameRAMLElement() {
@@ -640,13 +692,15 @@ export function renameRAMLElement() {
     let offset = editor.getBuffer().characterIndexForPosition(position);
     let editorPath = editor.getPath();
 
-    UI.prompt("Enter new name", newName=> {
+    let currentName = findCurrentName(editor.getText(), offset);
+
+    UI.prompt("Enter new name for: ", newName=> {
         ramlServer.getNodeClientConnection().
             rename(editorPath, offset, newName).then(changedDocuments=>{
 
             applyChangedDocuments(changedDocuments);
         })
-    })
+    }, currentName)
 
 }
 
