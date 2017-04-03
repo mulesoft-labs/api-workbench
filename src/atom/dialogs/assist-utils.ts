@@ -415,7 +415,7 @@ function indent(line:string){
     return rs;
 }
 
-export function getActiveEditor() {
+export function getActiveEditor() : AtomCore.IEditor {
     var activeEditor = atom.workspace.getActiveTextEditor()
     if (activeEditor) {
         return activeEditor
@@ -534,145 +534,121 @@ export function revalidate() {
     linterUI.relint(currentEditor);
 }
 
-// export function renameRAMLElement() {
-//     var ed = getActiveEditor();
-//     var quickFixes:QuickFix[] = [];
-//     if (ed) {
-//         if (path.extname(ed.getPath()) == '.raml') {
-//             var request = {editor: ed, bufferPosition: ed.getCursorBufferPosition()};
-//             var node = provider.getAstNode(request, false);
-//             if (!node) {
-//                 return;
-//             }
-//             var offset = request.editor.getBuffer().characterIndexForPosition(request.bufferPosition);
-//             var kind = search.determineCompletionKind(ed.getBuffer().getText(), offset);
-//             if (kind == search.LocationKind.VALUE_COMPLETION) {
-//                 var hlnode = <hl.IHighLevelNode>node;
-//
-//                 var attr = _.find(hlnode.attrs(), x=>x.lowLevel().start() < offset && x.lowLevel().end() >= offset && !x.property().getAdapter(services.RAMLPropertyService).isKey());
-//                 if (attr) {
-//                     if (attr.value()) {
-//                         var p:hl.IProperty = attr.property();
-//                         //FIXME INFRASTRUCTURE NEEDED
-//                         var v = attr.value();
-//                         var targets = search.referenceTargets(p,hlnode);
-//                         var t:hl.IHighLevelNode = _.find(targets, x=>x.name() == attr.value())
-//                         if (t) {
-//                             UI.prompt("New name for " + attr.value(), newVal=> {
-//                                 findUsagesImpl((n, r)=> {
-//                                     //todo update nodes
-//                                     r.reverse().forEach(x=> {
-//                                         var ua = x;
-//                                         ua.asAttr().setValue(newVal)
-//                                     })
-//                                     n.attr(n.definition().getAdapter(services.RAMLService).getKeyProp().nameId()).setValue(newVal);
-//                                     var ed = getActiveEditor();
-//                                     ed.getBuffer().setText(n.lowLevel().unit().contents());
-//
-//                                 })
-//                             }, attr.value());
-//                         }
-//                     }
-//                     //console.log(attr.value());
-//                 }
-//             }
-//             if (kind == search.LocationKind.KEY_COMPLETION || kind == search.LocationKind.SEQUENCE_KEY_COPLETION) {
-//                 var hlnode = <hl.IHighLevelNode>node;
-//
-//                         UI.prompt("New name for " + hlnode.name(), newVal=> {
-//                             findUsagesImpl((n, r)=> {
-//                                 var oldValue = n.attrValue(n.definition().getAdapter(services.RAMLService).getKeyProp().nameId())
-//
-//                                 //todo update nodes
-//                                 r.reverse().forEach(x=> {
-//                                     var ua = x;
-//
-//                                     renameInProperty(ua.asAttr(), oldValue, newVal)
-//                                 })
-//                                 n.attr(n.definition().getAdapter(services.RAMLService).getKeyProp().nameId()).setValue(newVal);
-//                                 var ed = getActiveEditor();
-//                                 ed.getBuffer().setText(n.lowLevel().unit().contents());
-//
-//                             })
-//                         }, hlnode.name());
-//             }
-//         }
-//     }
-// }
+/**
+ * Applies single text edit to the document contents.
+ * @param oldContents
+ * @param edit
+ */
+export function applyDocumentEdit(oldContents : string, edit: ramlServer.ITextEdit) : string {
 
-// function renameInProperty(property : hl.IAttribute, contentToReplace : string, replaceWith : string) {
-//     var oldPropertyValue = property.value();
-//     if (typeof oldPropertyValue == 'string') {
-//
-//         var oldPropertyStringValue = <string> oldPropertyValue;
-//
-//         var newPropertyStringValue = oldPropertyStringValue.replace(contentToReplace, replaceWith)
-//         property.setValue(newPropertyStringValue)
-//         if (oldPropertyStringValue.indexOf(contentToReplace) == -1) {
-//             if (property.name().indexOf(contentToReplace)!=-1){
-//                 var newValue = (<string>property.name()).replace(contentToReplace, replaceWith);
-//                 property.setKey(newValue);
-//             }
-//         }
-//         return;
-//     } else if (oldPropertyValue && (typeof oldPropertyValue ==="object")) {
-//         var structuredValue = <hl.IStructuredValue> oldPropertyValue;
-//
-//         var oldPropertyStringValue = structuredValue.valueName();
-//         if (oldPropertyStringValue.indexOf(contentToReplace) != -1) {
-//             var convertedHighLevel = structuredValue.toHighLevel();
-//
-//             if(convertedHighLevel) {
-//                 var found=false;
-//                 if (convertedHighLevel.definition().isAnnotationType()){
-//                     var prop=getKey((<def.AnnotationType>convertedHighLevel.definition()),structuredValue.lowLevel())
-//                     prop.setValue("("+replaceWith+")");
-//                     return;
-//                 }
-//                 convertedHighLevel.attrs().forEach(attribute => {
-//                     if(attribute.property().getAdapter(services.RAMLPropertyService).isKey()) {
-//                         var oldValue = attribute.value();
-//                         if (typeof oldValue == 'string') {
-//                             found=true;
-//                             var newValue = (<string>oldValue).replace(contentToReplace, replaceWith);
-//                             attribute.setValue(newValue);
-//                         }
-//                     }
-//                 })
-//
-//                 return;
-//             }
-//             //var lowLevelNode = structuredValue.lowLevel();
-//             //if ((<any>lowLevelNode).yamlNode) {
-//             //    var yamlNode : yaml.YAMLNode = (<any>lowLevelNode).yamlNode();
-//             //    if(yamlNode.kind == yaml.Kind.MAPPING) {
-//             //        var key = (<yaml.YAMLMapping>yamlNode).key
-//             //        if (key && key.value && key.value.indexOf(contentToReplace) != -1){
-//             //            oldPropertyStringValue = key.value
-//             //            var newStringValue = oldPropertyStringValue.replace(contentToReplace, replaceWith);
-//             //            key.value = newStringValue;
-//             //            return;
-//             //        }
-//             //    }
-//             //}
-//
-//
-//         }
-//     }
-//
-//     //default case
-//     property.setValue(replaceWith)
-// }
-// function getKey(t: def.AnnotationType,n:lowLevel.ILowLevelASTNode){
-//     var up=new def.UserDefinedProp("name", null);
-//     //up.withDomain(this);
-//     up.withRange(this.universe().type(universes.Universe10.StringType.name));
-//     up.withFromParentKey(true);
-//     var node=t.getAdapter(services.RAMLService).getDeclaringNode();
-//     //node:ll.ILowLevelASTNode, parent:hl.IHighLevelNode, private _def:hl.IValueTypeDefinition, private _prop:hl.IProperty, private fromKey:boolean = false
-//     return stubs.createASTPropImpl(n,node,up.range(),up,true);
-//     //rs.push(up);
-// }
+    if (edit.range.end == 0) return edit.text + oldContents;
+
+    if (edit.range.start >= oldContents.length) return oldContents + edit.text;
+
+    if (edit.range.start < 0 || edit.range.end > oldContents.length) {
+        throw new Error("Range of [" + edit.range.start + ":" + edit.range.end
+            +"] is not applicable to document of length " + oldContents.length);
+    }
+
+    if (edit.range.start >= edit.range.end) {
+        throw new Error("Range of [" + edit.range.start + ":" + edit.range.end
+            +"] should have end greater than start");
+    }
+
+    let beginning = "";
+    if (edit.range.start > 0) {
+        beginning = oldContents.substring(0, edit.range.start - 1);
+    }
+
+    let end = "";
+    if (edit.range.end < oldContents.length) {
+        end = oldContents.substring(edit.range.end);
+    }
+
+    return beginning + edit.text + end;
+}
+
+export function applyDocumentEdits(oldContents : string, edits: ramlServer.ITextEdit[]) : string {
+    if (edits.length > 1) {
+        //TODO implement this
+        throw new Error("Unsupported application of more than 1 text editor at once to a single file");
+    }
+
+    let newContents = applyDocumentEdit(oldContents, edits[0]);
+    return newContents;
+}
+
+/**
+ * Gets opened editor for specified path or uri.
+ * Currently only returns active editor if applicable, in future may also return other opened editors.
+ * @param path
+ * @returns {any}
+ */
+export function getEditorByUriOrPath(path : string) : AtomCore.IEditor{
+    //TODO consider also returning other opened editors
+
+    let activeEditor = getActiveEditor();
+    if (activeEditor.getPath() == path) return activeEditor;
+
+    return null;
+}
+
+/**
+ * Applies a set of changed documents to current documents and files
+ * @param changedDocuments
+ */
+export function applyChangedDocuments(changedDocuments : ramlServer.IChangedDocument[]) : void {
+
+    for (let changedDocument of changedDocuments) {
+
+        let editor = getEditorByUriOrPath(changedDocument.uri);
+
+        let oldContents = null;
+        if (editor) {
+            oldContents = editor.getText();
+        } else {
+            oldContents = fs.readFileSync(changedDocument.uri).toString();
+        }
+
+        let newText = null;
+        if (changedDocument.text) {
+            newText = changedDocument.text;
+        } else if (changedDocument.textEdits) {
+            newText = applyDocumentEdits(oldContents, changedDocument.textEdits);
+        } else {
+            continue;
+        }
+
+        if (editor) {
+            editor.getBuffer().setText(newText);
+        } else {
+            fs.writeFileSync(changedDocument.uri, newText);
+        }
+    }
+}
+
+/**
+ * Activates renaming for current active editor and cursor position
+ */
+export function renameRAMLElement() {
+    var editor = getActiveEditor();
+    if (!editor) return;
+
+    if (path.extname(editor.getPath()) != '.raml') return;
+
+    let position = editor.getCursorBufferPosition()
+    let offset = editor.getBuffer().characterIndexForPosition(position);
+    let editorPath = editor.getPath();
+
+    UI.prompt("Enter new name", newName=> {
+        ramlServer.getNodeClientConnection().
+            rename(editorPath, offset, newName).then(changedDocuments=>{
+
+            applyChangedDocuments(changedDocuments);
+        })
+    })
+
+}
 
 var getKeyValue = function (offset, txt) {
     var m = offset;
@@ -807,60 +783,3 @@ class SearchResultView extends SpacePenViews.ScrollView {
 }
 var sv:SearchResultView;
 
-
-// //TODO REFACTOR COMMON LOGIC TO COFE
-// var openPropertyNode = function (ed:AtomCore.IEditor, t:hl.IParseResult) {
-//     var p1 = ed.getBuffer().positionForCharacterIndex(t.getLowLevelStart());
-//     var p2 = ed.getBuffer().positionForCharacterIndex(t.getLowLevelEnd());
-//     ed.setSelectedBufferRange({start: p1, end: p2}, {});
-// };
-// //TODO REFACTOR COMMON LOGIC TO COFE
-// var openNode = function (ed:AtomCore.IEditor, t:hl.IParseResult) {
-//    openLowLevelNode(ed,t.lowLevel());
-// };
-// //TODO REFACTOR COMMON LOGIC TO COFE
-// var openLowLevelNode = function (ed:AtomCore.IEditor, t:lowLevel.ILowLevelASTNode) {
-//     if (t.unit().absolutePath()!=ed.getPath()){
-//         atom.workspace.open(t.unit().absolutePath(),{}).then(x=>{
-//
-//             ed=getActiveEditor();
-//             openLowLevelNode(ed,t);
-//         });
-//         return;
-//     }
-//     var p1 = ed.getBuffer().positionForCharacterIndex(t.start());
-//     var p2 = ed.getBuffer().positionForCharacterIndex(t.end());
-//     p2.column = p1.column + t.key()?t.key().length:0;
-//     p2.row = p1.row;
-//     ed.setSelectedBufferRange({start: p1, end: p2}, {});
-// };
-
-// export function gotoDeclaration(){
-//     var ed=getActiveEditor();
-//     if (ed){
-//         if (path.extname(ed.getPath())=='.raml'){
-//             var request={editor:ed,bufferPosition:ed.getCursorBufferPosition()};
-//             var p=request.editor.getPath();
-//             var prj=rp.project.createProject(path.dirname(p));
-//             var unit=prj.unit(path.basename(p));
-//             var offset=request.editor.getBuffer().characterIndexForPosition(request.bufferPosition);
-//             var text=request.editor.getBuffer().getText();
-//             unit.updateContent(text);
-//             var decl=search.findDeclaration(unit,offset);
-//
-//             if(decl) {
-//                 if(!(<any>decl).absolutePath){
-//                     openLowLevelNode(ed,(<hl.IParseResult>decl).lowLevel());
-//                 } else {
-//                     var absolutePath = (<lowLevel.ICompilationUnit>decl).absolutePath();
-//
-//                     if(absolutePath && absolutePath.toLowerCase().indexOf('http') === 0) {
-//                         return;
-//                     }
-//
-//                     atom.workspace.open(absolutePath, {});
-//                 }
-//             }
-//         }
-//     }
-// }

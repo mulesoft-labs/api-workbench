@@ -25,17 +25,17 @@ module package_entry_point {
         require('atom-package-deps').install('api-workbench', true)
             .then(() => {
                 subscriptions.add(atom.commands.add('atom-workspace', {
-                    'api-workbench:popular-apis': apiList.showPopularApis,
+                    /*'api-workbench:popular-apis': apiList.showPopularApis,*/
                     'api-workbench:editor-tools':editorTools.initEditorTools,
                     /*'api-workbench:console': Console.toggle,*/
                     'api-workbench:go-to-definition':decl.gotoDeclaration,
                     'api-workbench:find-usages':decl.findUsages,
-                    'api-workbench:quick-outline':quickOutline.show,
-                    'api-workbench:quick-commands': quickCommands.showCommands,
-                    /*'api-workbench:rename':decl.renameRAMLElement,*/
+                    /*'api-workbench:quick-outline':quickOutline.show,
+                    'api-workbench:quick-commands': quickCommands.showCommands,*/
+                    'api-workbench:rename':decl.renameRAMLElement,
                     'api-workbench:new-project':decl.newProject,
                     /*'api-workbench:select-node':decl.select,*/
-                    'api-workbench:revalidate':decl.revalidate
+                    /*'api-workbench:revalidate':decl.revalidate*/
                 }))
 
                 //subscriptions.add(atom.workspace.addOpener(Console.opener))
