@@ -31,6 +31,8 @@ import linterUI = require("../core/linter-ui")
 import editorTools = require("../editor-tools/editor-tools")
 import ramlServer = require("raml-language-server")
 import {ILocation} from "raml-language-server/dist/common/typeInterfaces";
+import textEditProcessor = ramlServer.textEditProcessor
+
 // import {universeHelpers} from "raml-1-parser/dist/index";
 
 interface QuickFix{
@@ -535,50 +537,6 @@ export function revalidate() {
 }
 
 /**
- * Applies single text edit to the document contents.
- * @param oldContents
- * @param edit
- */
-export function applyDocumentEdit(oldContents : string, edit: ramlServer.ITextEdit) : string {
-
-    if (edit.range.end == 0) return edit.text + oldContents;
-
-    if (edit.range.start >= oldContents.length) return oldContents + edit.text;
-
-    if (edit.range.start < 0 || edit.range.end > oldContents.length) {
-        throw new Error("Range of [" + edit.range.start + ":" + edit.range.end
-            +"] is not applicable to document of length " + oldContents.length);
-    }
-
-    if (edit.range.start >= edit.range.end) {
-        throw new Error("Range of [" + edit.range.start + ":" + edit.range.end
-            +"] should have end greater than start");
-    }
-
-    let beginning = "";
-    if (edit.range.start > 0) {
-        beginning = oldContents.substring(0, edit.range.start - 1);
-    }
-
-    let end = "";
-    if (edit.range.end < oldContents.length) {
-        end = oldContents.substring(edit.range.end);
-    }
-
-    return beginning + edit.text + end;
-}
-
-export function applyDocumentEdits(oldContents : string, edits: ramlServer.ITextEdit[]) : string {
-    if (edits.length > 1) {
-        //TODO implement this
-        throw new Error("Unsupported application of more than 1 text editor at once to a single file");
-    }
-
-    let newContents = applyDocumentEdit(oldContents, edits[0]);
-    return newContents;
-}
-
-/**
  * Gets opened editor for specified path or uri.
  * Currently only returns active editor if applicable, in future may also return other opened editors.
  * @param path
@@ -614,7 +572,7 @@ export function applyChangedDocuments(changedDocuments : ramlServer.IChangedDocu
         if (changedDocument.text) {
             newText = changedDocument.text;
         } else if (changedDocument.textEdits) {
-            newText = applyDocumentEdits(oldContents, changedDocument.textEdits);
+            newText = textEditProcessor.applyDocumentEdits(oldContents, changedDocument.textEdits);
         } else {
             continue;
         }
