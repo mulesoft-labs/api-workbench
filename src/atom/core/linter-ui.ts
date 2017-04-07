@@ -213,49 +213,93 @@ function getEditorId(textEditor): string {
 
 class ValidationReportExpected {
     public uri : string
+    public expectedVersion : number
     public resolve : {(result:any):void}
     public reject : {(error:any):void}
 }
 
+let clientConnection = getNodeClientConnection();
 var expectedValidationReports : ValidationReportExpected[] = [];
 
-function findAndRemoveExpectedReports(uri : string) : ValidationReportExpected[] {
+function findAndRemoveExpectedReports(uri : string,
+                                      versionLimit: number) : ValidationReportExpected[] {
     let result : ValidationReportExpected[] = [];
 
     expectedValidationReports = expectedValidationReports.filter(reportExpected=>{
-        if (reportExpected.uri == uri) {
+
+        if (reportExpected.uri == uri
+            && (versionLimit == null || reportExpected.expectedVersion == null ||
+                versionLimit >= reportExpected.expectedVersion)) {
+
             result.push(reportExpected);
             return false;
         }
+
         return true;
     });
 
     return result;
 }
 
-let clientConnection = getNodeClientConnection();
+var latestRecievedReport = null;
 clientConnection.onValidationReport((report: IValidationReport)=>{
-    console.log("Linter-ui:onValidationReport Recieved validation report")
-    let expectedReports = findAndRemoveExpectedReports(report.pointOfViewUri);
-    console.log("Linter-ui:onValidationReport Found expected reports: " + expectedReports.length)
+    clientConnection.debugDetail("Got debug report for uri " + report.pointOfViewUri +
+        " and version " + report.version,
+        "linter-ui", "onValidationReport")
+
+    let expectedReports = findAndRemoveExpectedReports(report.pointOfViewUri,
+        report.version);
+
+    clientConnection.debugDetail("Found expected reports: " + expectedReports.length,
+        "linter-ui", "onValidationReport")
 
     for (let expectedReport of expectedReports) {
         expectedReport.resolve(report.issues);
     }
+
+    latestRecievedReport = report;
 });
 
 function runValidationSheduleUpdater(textEditor: AtomCore.IEditor, resolve, reject) : void {
     let uri = textEditor.getPath();
-    expectedValidationReports.push({
-       uri: uri,
-       resolve : resolve,
-       reject: reject
-    });
 
+    //in any way, lets report current state, it should not hurt.
     clientConnection.documentChanged({
         uri : uri,
         text: textEditor.getBuffer().getText()
     });
+
+    clientConnection.getLatestVersion(uri).then(version=>{
+        clientConnection.debugDetail("Scheduling validation for uri " + uri + " and version " +
+            version,
+            "linter-ui", "runValidationSheduleUpdater")
+
+        if (latestRecievedReport && latestRecievedReport.version &&
+            latestRecievedReport.version >= version) {
+
+            //we already know validation report for this version
+
+            clientConnection.debugDetail("Previous report found v " +
+                latestRecievedReport.version + " resolving, issues " +
+                (latestRecievedReport.issues?latestRecievedReport.issues.length:0),
+                "linter-ui", "runValidationSheduleUpdater")
+
+            resolve(latestRecievedReport.issues)
+        } else {
+
+            //lets wait until the server provides a report for this or later version
+            expectedValidationReports.push({
+                uri: uri,
+                expectedVersion: version,
+                resolve : resolve,
+                reject: reject
+            });
+
+            clientConnection.debugDetail("Pushing the expected report to the list for version " +
+                version,
+                "linter-ui", "runValidationSheduleUpdater")
+        }
+    })
 }
 
 export function lint(textEditor: AtomCore.IEditor): Promise<any[]> {
@@ -268,6 +312,11 @@ export function lint(textEditor: AtomCore.IEditor): Promise<any[]> {
     var promise = new Promise((resolve, reject) => {
         runValidationSheduleUpdater(textEditor, resolve, reject);
     }).then((errors: any[]) => {
+
+        clientConnection.debugDetail("Update report handled in with issues " +
+            (errors?errors.length:0),
+            "linter-ui", "lint")
+
         var buffers = {};
         
         var promises = errors.map(error => postPocessError(textEditor, error, buffers));
@@ -286,6 +335,9 @@ export function lint(textEditor: AtomCore.IEditor): Promise<any[]> {
             });
         });
     });
+
+    clientConnection.debugDetail("Before returning from lint",
+        "linter-ui", "lint")
     
     return promise;
 }
