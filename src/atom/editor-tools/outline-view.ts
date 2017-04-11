@@ -113,7 +113,10 @@ export class RamlOutline extends SC.Scrollable {
     unitPath: string;
 
     setUnit(unitPath: string/*unit:hl.IHighLevelNode*/, force: boolean = false) {
-        this._children=[];
+        if (this.unitPath && unitPath && unitPath != this.unitPath) {
+            this._children=[];
+        }
+
         this.unitPath = unitPath;
 
         let activeEditor = getActiveEditor();
@@ -130,6 +133,8 @@ export class RamlOutline extends SC.Scrollable {
                 this.createTree(structure);
 
                 (<any>this).addClass('raml-outline');
+
+                this._children=[];
                 this.addChild(this._rs);
                 this.html(this.innerRenderUI());
             }).catch(error=>{
