@@ -181,16 +181,19 @@ function postPocessError(editor, error, buffers) {
 
         return buffer;
     }).then(buffer => {
-        console.log("Linter-ui:postPocessError Converting an error with range: [" + error.range.start + " , " + error.range.end + "]")
+        clientConnection.debugDetail("Converting an error with range: [" + error.range.start + " , " + error.range.end + "]",
+            "Linter-ui","postPocessError");
 
         if (error.range.start != null && error.range.end != null) {
 
-            console.log("Linter-ui:postPocessError Converting an error with range as array: [" + error.range[0] + " , " + error.range[1] + "]")
+            clientConnection.debugDetail("Converting an error with range as array: [" + error.range[0] + " , " + error.range[1] + "]",
+                "Linter-ui","postPocessError");
 
             var p1 = buffer.positionForCharacterIndex(error.range.start);
             var p2 = buffer.positionForCharacterIndex(error.range.end);
 
-            console.log("Linter-ui:postPocessError Result error range: [" + p1.row + " , " + p1.column + "] ; ["+ p2.row + " , " + p2.column + "]")
+            clientConnection.debugDetail("Result error range: [" + p1.row + " , " + p1.column + "] ; ["+ p2.row + " , " + p2.column + "]",
+                "Linter-ui","postPocessError");
 
             error.range = [[p1.row, p1.column], [p2.row, p2.column]];
         }
