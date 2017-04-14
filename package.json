@@ -92,7 +92,6 @@
     "node-libs-browser": "^0.5.2",
     "typescript": "1.8.7",
     "dev-env-installer":"0.0.6",
-    "run-sequence":"^1.0.0",
-    "raml-outline":"0.0.1"
+    "run-sequence":"^1.0.0"
   }
 }
