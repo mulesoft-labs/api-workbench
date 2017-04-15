@@ -1,16 +1,10 @@
-# API Workbench
+# API Workbench Atom Plugin for RAML Server Prototype
 
-[![Build Status](https://travis-ci.org/mulesoft/api-workbench.svg?branch=code)](https://travis-ci.org/mulesoft/api-workbench) [![Stories in Ready](https://badge.waffle.io/mulesoft/api-workbench.png?label=ready&title=Ready)](https://waffle.io/mulesoft/api-workbench)
+
 
 ![API Workbench](https://dl.dropboxusercontent.com/u/497895/__permalinks/api-workbench-slide-small.png)
 
-> API Workbench, a rich, full-featured integrated development environment (IDE) for designing, building, testing, documenting and sharing RESTful HTTP APIs. It supports both RAML 0.8 and the recently launched RAML 1.0. RAML makes it easy to manage the whole API lifecycle from design to sharing.
-
-This repository contains the source code for the API Workbench plugin that you can easily install into [Github's Atom Editor](https://atom.io/).
-
-The main API Workbench site: [www.apiworkbench.com](http://apiworkbench.com)
-
-Additional information such as tips on installation may be found in the [wiki](https://github.com/mulesoft/api-workbench/wiki).
+This repository branch contains contains the source code for the API Workbench plugin prototype, which serves as a client for RAML Server.
 
 ## Installation Guide
 
@@ -18,13 +12,17 @@ Dependencies:
 
 * Atom ([Installation Guide](http://flight-manual.atom.io/getting-started/sections/installing-atom/))
 
+
+Do uninstall mainstream api-workbench package in Atom preferences, if installed.
+
 ```
-apm install api-workbench
+git clone -b api-workbench-server --single-branch https://github.com/mulesoft/api-workbench.git
+
+cd api-workbench
+
+apm install
+
+npm build
+
+apm link
 ```
-
-Alternatively, open `Settings/Preferences -> Install` and search for `api-workbench`.
-
-
-## Contribution
-
-If you want to contribute to this project, please read our [contribution guide](CONTRIBUTION.md) first.
