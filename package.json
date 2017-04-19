@@ -34,9 +34,9 @@
     }
   },
   "consumedServices": {
-    "linter-plus-self": {
+    "linter": {
       "versions": {
-        "0.1.0": "consumeLinter"
+        "1.0.0": "consumeLinter"
       }
     }
   },

@@ -15,36 +15,12 @@ import editorTools=require("../editor-tools/editor-tools")
 export var grammarScopes= ['source.raml']
 export var scope= 'file'
 export var lintOnFly= true;
-var lintersToDestroy = [];
-var linterApiProxy:any={};
 
 export var relint = function (editor:AtomCore.IEditor)  {
-    var editorPath = editor.getPath && editor.getPath();
-
-    var extName = editorPath && path.extname(editorPath);
-
-    var lowerCase = extName && extName.toLowerCase();
-
-    var linter = linterApiProxy.getEditorLinter(editor);
-    lintersToDestroy.push(linter);
-
-    if(lowerCase === '.raml' || lowerCase === '.yaml' ) {
-        var res=lint(editor);
-
-        if(!rr.hasAsyncRequests()) {
-            linterApiProxy.setMessages(linter, res);
-        }
-
-        setupLinterCallback(editor, () => linterApiProxy.deleteMessages(linter));
-
-        linter.onDidDestroy(() => {
-            removeLinterCallback(editor);
-        });
-
-        editor.onDidDestroy(() => {
-            destroyLinter(linterApiProxy, linter);
-        });
-    }
+    (<any>editor).getBuffer().emitter.emit("did-change", {
+        oldText: (<any>editor).getBuffer().getText(),
+        newText: (<any>editor).getBuffer().getText()
+    });
 }
 
 function relintLater(editor: any) {
@@ -53,48 +29,25 @@ function relintLater(editor: any) {
     });
 }
 
-export function initEditorObservers(linterApi) {
-    linterApiProxy=linterApi;
+export function initEditorObservers(linter) {
     rr.addLoadCallback(x => {
         atom.workspace.getTextEditors().forEach(x=>relintLater(x));
-
+    
         var manager = editorTools.aquireManager();
-
+    
         if(manager) {
             manager.updateDetails();
         }
-    })
+    });
+    
     atom.workspace.observeTextEditors(relintLater);
+    
     return {
         dispose: () => {
-            lintersToDestroy.forEach(linter => {
-                destroyLinter(linterApi, linter);
-            })
+
         }
     }
 }
-
-function destroyLinter(linterApi, linter) {
-    linterApi.deleteMessages(linter);
-
-    linterApi.deleteLinter(linter);
-};
-
-function setupLinterCallback(editor, callback) {
-    editor.linterCallback = callback;
-}
-
-function removeLinterCallback(editor) {
-    editor.linterCallback = null;
-}
-
-function execLinterCallback(editor) {
-    if(editor.linterCallback) {
-        editor.linterCallback();
-        removeLinterCallback(editor);
-    }
-}
-
 
 export function lint(textEditor:AtomCore.IEditor) {
     var result = actualLint(textEditor);
@@ -142,8 +95,6 @@ var combErrors = function (result:any[]) {
     return rs;
 };
 function actualLint(textEditor:AtomCore.IEditor) {
-    execLinterCallback(textEditor);
-
     if(rr.hasAsyncRequests()) {
         return [];
     }
