@@ -556,10 +556,37 @@ export function renameRAMLElement() {
 
                         UI.prompt("New name for " + hlnode.name(), newVal=> {
                             findUsagesImpl((n, r)=> {
-                                var oldValue = n.attrValue(n.definition().getAdapter(services.RAMLService).getKeyProp().nameId())
+                                let oldValue = n.attrValue(n.definition().getAdapter(services.RAMLService).getKeyProp().nameId())
+
+                                let filtered : hl.IParseResult[] = [];
+                                r.reverse().forEach(usage=> {
+
+                                    let hasConflicting = false;
+
+                                    for (let current of filtered) {
+                                        let currentLowLevel = current.lowLevel();
+                                        if (!currentLowLevel) continue;
+
+                                        let currentStart = currentLowLevel.start();
+                                        let currentEnd = currentLowLevel.end();
+
+                                        let usageLowLevel = usage.lowLevel();
+                                        if (!usageLowLevel) continue;
+
+                                        let usageStart = usageLowLevel.start();
+                                        let usageEnd = usageLowLevel.end();
+
+                                        if (usageStart <= currentEnd && usageEnd >= currentStart) {
+                                            hasConflicting = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!hasConflicting) filtered.push(usage);
+                                })
 
                                 //todo update nodes
-                                r.reverse().forEach(x=> {
+                                filtered.forEach(x=> {
                                     var ua = x;
 
                                     renameInProperty(ua.asAttr(), oldValue, newVal)
