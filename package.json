@@ -71,7 +71,7 @@
     "raml-1-parser": "1.1.20",
     "raml-suggestions": "0.0.31",
     "raml-actions" : "0.0.17",
-    "raml-outline" : "0.0.6"
+    "raml-outline" : "0.0.8"
   },
   "devDependencies": {
     "coffee-loader": "^0.7.2",
