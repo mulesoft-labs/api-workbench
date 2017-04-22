@@ -1234,19 +1234,27 @@ class MethodDemo extends PureComponent<NodeProps<RamlMethod>, {}> {
     var node = this.props.node
     var method = node.method()
     var contentType = this.props.state.body
-    var securityScheme = this.props.state.securityScheme
+    var securitySchemes = (<RamlSecuritySchemeRef[]>node.allSecuredBy()).map(x => x.securityScheme())
+    
+    var securityScheme = this.props.state.securityScheme;
+    
+    if(!securityScheme) {
+      this.props.state.securityScheme = securitySchemes && securitySchemes[0] && securitySchemes[0].name();
+      securityScheme = this.props.state.securityScheme;
+    }
+    
     var progress = this.props.pageState.requestProgress
     var bodies = (<RamlBody[]>node.body()).map(x => x.name())
-    var securitySchemes = (<RamlSecuritySchemeRef[]>node.allSecuredBy()).map(x => x.securityScheme())
-    var currentSecurityScheme = securitySchemes.filter(x => x != null && x.name() === securityScheme)[0]
-        
+    
+    var currentSecurityScheme = securitySchemes.filter(x => x != null && x.name() === securityScheme)[0];
+    
     if(!this.props.state.bodies || Object.keys(this.props.state.bodies).length === 0) {
       this.props.state.bodies = {};
 
       (<RamlBody[]>node.body()).forEach((body: any) => {
         var name = body.name();
         
-        var example = body.example() || body.examples()[0];
+        var example = (body.example && body.example()) || (body.examples && body.examples() && body.examples()[0]);
 
         example && (this.props.state.bodies[name] = example.value());
       });

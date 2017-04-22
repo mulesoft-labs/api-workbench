@@ -44,7 +44,14 @@ export function generateSuggestionsPanel(node:hl.IHighLevelNode):UI.UIComponent{
     var hc=UI.hc();
     result.addChild(UI.h3("Insertions and Delete: "));
     result.addChild(hc)
+
+    var isInclude = node.lowLevel() && node.lowLevel().includePath && node.lowLevel().includePath();
+
     cm.forEach(x=>{
+        if(isInclude && x.nameId() === universes.Universe10.Api.properties.uses.name) {
+            return;
+        }
+
         if (x.isValueProperty()){
             return;
         }

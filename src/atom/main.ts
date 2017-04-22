@@ -62,8 +62,8 @@ module package_entry_point {
         return linterUI;
     }
 
-    export function consumeLinter(linterApi) {
-        subscriptions.add(linterUI.initEditorObservers(linterApi));
+    export function consumeLinter(linter) {
+        linterUI.initEditorObservers(null);
     }
 
     export function deactivate(){
