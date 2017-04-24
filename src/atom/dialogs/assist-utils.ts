@@ -837,9 +837,17 @@ export function gotoDeclaration(){
             var request={editor:ed,bufferPosition:ed.getCursorBufferPosition()};
             var p=request.editor.getPath();
             var prj=rp.project.createProject(path.dirname(p));
-            var unit=prj.unit(path.basename(p));
-            var offset=request.editor.getBuffer().characterIndexForPosition(request.bufferPosition);
             var text=request.editor.getBuffer().getText();
+            
+            var unit = prj.unit(path.basename(p));
+            
+            if(!unit) {
+                prj.setCachedUnitContent(p, text);
+
+                unit = prj.unit(path.basename(p));
+            }
+            
+            var offset=request.editor.getBuffer().characterIndexForPosition(request.bufferPosition);
             unit.updateContent(text);
             var decl=search.findDeclaration(unit,offset);
 
