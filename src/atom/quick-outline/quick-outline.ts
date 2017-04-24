@@ -50,7 +50,7 @@ class QuickOutlineDialog{
             .margin(4,10)
         var ok=UI.button("Ok",UI.ButtonSizes.NORMAL,UI.ButtonHighlights.PRIMARY,UI.Icon.NONE,x=>{
             if (nodeToSelect) {
-                editorTools.aquireManager().setSelectedNode(nodeToSelect);
+                editorTools.aquireManager().setSelectedNode(nodeToSelect.getSource ? nodeToSelect.getSource() : nodeToSelect);
             }
             zz.destroy();
         });
