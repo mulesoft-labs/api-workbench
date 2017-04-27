@@ -93,6 +93,9 @@ class EditorManager{
     private updateCount: number=0;
 
     private cursorChanged(editor: atom.ITextEditor, newBufferPosition: Point) {
+
+        markOccurrences.clearOccurences(editor);
+
         this.markOccurrencesReconciler.schedule(new markOccurrences.MarkOccurrenceRunnable(editor, newBufferPosition));
     }
 
