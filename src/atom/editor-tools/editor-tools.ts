@@ -13,7 +13,7 @@ import pair = require("../../util/pair");
 import outlineView=require("./outline-view")
 import UI=require("atom-ui-lib")
 import ramlServer = require("raml-language-server");
-
+import markOccurrences = require("../core/markOccurences")
 
 var _bmc : number = 0;
 function benchmark(func?: string): void {
@@ -39,6 +39,8 @@ interface IChangeCommand {
     newRange: Range;
 }
 
+
+
 class EditorManager{
 
     private currentEditor:any;
@@ -55,6 +57,8 @@ class EditorManager{
 
     private _initialized: boolean = false;
 
+    private markOccurrencesReconciler;
+
     getPath(): string {
         console.log("ETM::GetPath");
         return this.currentEditor ? this.currentEditor.getPath() : null;
@@ -65,6 +69,8 @@ class EditorManager{
     constructor(display: boolean = true) {
         manager = window["manager"] = this;
 
+        this.markOccurrencesReconciler = new ramlServer.Reconciler(ramlServer.getNodeClientConnection(), 200);
+
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
 
         atom.workspace.observeTextEditors(editor=>{
@@ -74,6 +80,8 @@ class EditorManager{
 
                 ramlServer.getNodeClientConnection().documentClosed(path);
             })
+
+            editor.onDidChangeCursorPosition(event=>this.cursorChanged(editor, event.newBufferPosition))
         })
 
         this.updateEverything(display);
@@ -83,6 +91,10 @@ class EditorManager{
     }
 
     private updateCount: number=0;
+
+    private cursorChanged(editor: atom.ITextEditor, newBufferPosition: Point) {
+        this.markOccurrencesReconciler.schedule(new markOccurrences.MarkOccurrenceRunnable(editor, newBufferPosition));
+    }
 
     internalScheduleUpdateViews(count:number){
         this.updateCount=count;
