@@ -65,12 +65,12 @@ interface IPane {
     moveItemToPane(item:any, pane:IPane, index:number):void;
 }
 
-interface Point{
+export interface Point{
     row:number;
     column:number;
 }
 
-interface Range {
+export interface Range {
     start:Point;
     end:Point;
 }
@@ -81,11 +81,13 @@ export  interface  ICursor {
 
 export interface  IBuffer {
     positionForCharacterIndex(indexOf:any): Point;
+    characterIndexForPosition(position:Point):number;
 
     rangeForRow(any): Range;
 
     setText(text);
 }
+
 
 export interface  ITextEditor {
     getText(): string;
@@ -98,9 +100,18 @@ export interface  ITextEditor {
 
     setText(text);
 
-    getCursorBufferPosition();
+    getCursorBufferPosition():Point;
 
     onDidDestroy(callback:()=>void);
+
+    onDidChangeCursorPosition(callback: (event:{
+         oldBufferPosition:Point,
+         oldScreenPosition:Point,
+         newBufferPosition:Point,
+         newScreenPosition:Point,
+         textChanged:boolean,
+         cursor: ICursor
+     })=>void);
 }
 
 export interface  IEditor {

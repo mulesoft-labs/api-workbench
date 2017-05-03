@@ -44,28 +44,11 @@
             'command': 'api-workbench:new-project'
           },
           {
-            'label': 'Get APIs from ...',
-            'submenu': [
-              {
-                'label': 'Popular APIs ( Community )',
-                'command': 'api-workbench:popular-apis'
-              }
-            ]
-          },
-          {
             type: 'separator'
-          },
-          {
-            'label': 'Open API Console',
-            'command': 'api-workbench:console'
           },
           {
             'label': 'Open RAML Editor Tools',
             'command': 'api-workbench:editor-tools'
-          },
-          {
-            'label': 'Show Quick Commands',
-            'command': 'api-workbench:quick-commands'
           },
           {
             type: 'separator'
