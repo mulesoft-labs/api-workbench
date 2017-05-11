@@ -72,9 +72,15 @@ export class RamlOutline extends SC.Scrollable {
         try {
             var index = this.getNodePType(node);
             var viewer = this._viewers[index];
-
-            if (viewer != null) {
-                viewer.setSelection(node);
+            
+            var treeModel = viewer.getTreeModel();
+            
+            var structureNodeElement = treeModel.findElement((structureNode: ramlOutline.StructureNode) => {
+                return node && node === structureNode.getSource();
+            });
+            
+            if (structureNodeElement && viewer != null) {
+                viewer.setSelection(structureNodeElement);
                 this._rs.setSelectedIndex(index);
             }
         }finally {
