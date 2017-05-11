@@ -56,6 +56,7 @@
   "atom-ui-lib" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/ui-libs.git",
+    "gitBranch" : "develop",
     "installTypings" : true
   }
 }
