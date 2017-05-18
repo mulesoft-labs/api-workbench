@@ -392,8 +392,9 @@ class EditorManager{
     updateViews() {
         var cNode = this.getCurrentNode();
         var ds=new Date().getMilliseconds();
+
         if (this._details) {
-            this.getDetails().show(cNode);
+            this.getDetails().show(cNode, this.isFromEdgeRow());
         }
         if (this._view) {
             this.getOrCreateView().setUnit(manager.ast);
@@ -404,6 +405,39 @@ class EditorManager{
             console.log("Views update:" + (d1 - ds));
         }
     }
+
+    private isFromEdgeRow(): boolean {
+        var editor = this.getCurrentEditor()
+
+        if(!editor) {
+            return false;
+        }
+
+        var currentPosition = editor.getCursorBufferPosition();
+        
+        if(!currentPosition) {
+            return false;
+        }
+        
+        var currentRow = currentPosition.row;
+
+        var previousRow = editor.previousRow;
+
+        editor.previousRow = currentRow;
+        
+        if(previousRow === undefined) {
+            return false;
+        }
+        
+        if(previousRow === currentRow) {
+            return false;
+        }
+        
+        if(previousRow === editor.getBuffer().getLastRow() || previousRow === 0) {
+            return true;
+        }
+    }
+
     _cleanOutline=false;
 
     updateOutline() {

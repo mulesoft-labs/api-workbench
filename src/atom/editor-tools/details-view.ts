@@ -166,8 +166,8 @@ export class RamlDetails extends SC.Scrollable {
         details.oldItem=null;
     }
 
-    show(node:hl.IHighLevelNode) {
-        if (this._node == node) return;
+    show(node:hl.IHighLevelNode, force: boolean = false) {
+        if (!force && this._node === node) return;
         this._node = node;
         try {
             if (isSchema(node))
