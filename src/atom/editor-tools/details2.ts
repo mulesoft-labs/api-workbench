@@ -532,8 +532,14 @@ class PropertyEditorInfo extends Item{
             }
             
             attr = this.node.attrOrCreate(this.property.nameId());
-            attr.setValue("" + vl);
+
+            attr.remove();
+
+            attr = this.node.attrOrCreate(this.property.nameId());
             
+            attr.setValue("" + vl);
+
+            delete this.node['_ptype'];
         }
         else{
             if (attr){
@@ -546,7 +552,7 @@ class PropertyEditorInfo extends Item{
         if (attr.lowLevel() && attr.lowLevel().unit() && attr.lowLevel().unit() != this.node.lowLevel().unit()) {
             provider.saveUnit(attr.lowLevel().unit());
         }
-
+        
         var root=this.root()
         if (root){
             root.update(this);
@@ -1271,7 +1277,7 @@ export function buildItem(node:hl.IHighLevelNode,dialog:boolean){
                 return;
             }
             var vls = valueOptions(x, node);
-            if (vls&&vls.length>0&&((x.domain()&&x.domain().getAdapter(def.RAMLService).isUserDefined()))){
+            if (vls&&vls.length>0&&(((x.domain() && x.domain().getAdapter(def.RAMLService).isUserDefined() || universehelpers.isTypeProperty(x))))){
                 if (universehelpers.isTypeProperty(x) &&
                     node.definition().isAssignableFrom(universe.Universe10.TypeDeclaration.name)) {
 
@@ -1285,7 +1291,6 @@ export function buildItem(node:hl.IHighLevelNode,dialog:boolean){
                     result.addItemToCategory(category(x,node), new SimpleMultiEditor(x, node));
                 }
                 else {
-
                     result.addItemToCategory(category(x, node), new PropertyEditorInfo(x, node));
                 }
             }
