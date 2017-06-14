@@ -14,7 +14,6 @@
   },
   "raml-1-parser" : {
     "build" : "npm run build",
-    "test" : "gulp test",
     "gitUrl" : "https://github.com/raml-org/raml-js-parser-2.git",
     "installTypings" : true
   },
@@ -25,7 +24,6 @@
   },
   "raml-typesystem" : {
     "build" : "npm run build",
-    "test" : "npm run test-cov",
     "gitUrl" : "https://github.com/raml-org/typesystem-ts.git",
     "installTypings" : true
   },
