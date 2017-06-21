@@ -7,6 +7,8 @@ import stubs=rp.stubs;
 import lowLevel=rp.ll;
 import hl=rp.hl;
 
+import urlParser = require("url");
+
 import universes=rp.universes;
 
 import search=rp.search;
@@ -815,20 +817,49 @@ var openNode = function (ed:AtomCore.IEditor, t:hl.IParseResult) {
 };
 //TODO REFACTOR COMMON LOGIC TO COFE
 var openLowLevelNode = function (ed:AtomCore.IEditor, t:lowLevel.ILowLevelASTNode) {
-    if (t.unit().absolutePath()!=ed.getPath()){
-        atom.workspace.open(t.unit().absolutePath(),{}).then(x=>{
+    var editorPath = fixUrl(ed.getPath());
+    var unitPath = fixUrl(t.unit().absolutePath());
 
-            ed=getActiveEditor();
-            openLowLevelNode(ed,t);
+    if(unitPath !== editorPath) {
+        atom.workspace.open(unitPath,{}).then(x => {
+            ed = getActiveEditor();
+            openLowLevelNode(ed, t);
         });
+        
         return;
+    } else if(urlParser.parse(unitPath).protocol) {
+        ed.setText(t.unit().contents());
     }
+    
     var p1 = ed.getBuffer().positionForCharacterIndex(t.start());
     var p2 = ed.getBuffer().positionForCharacterIndex(t.end());
     p2.column = p1.column + t.key()?t.key().length:0;
     p2.row = p1.row;
     ed.setSelectedBufferRange({start: p1, end: p2}, {});
 };
+
+function fixUrl(url: string): string {
+    var parsed = urlParser.parse(url);
+
+    var protocol = parsed.protocol;
+
+    if(protocol === null) {
+        return url;
+    }
+
+    var singleSlashed = protocol + "/";
+    var doubleSlashed = protocol + "//";
+
+    if(url.indexOf(doubleSlashed) === 0) {
+        return url;
+    }
+
+    if(url.indexOf(singleSlashed) === 0) {
+        return url.replace(singleSlashed, doubleSlashed)
+    }
+
+    return url;
+}
 
 export function gotoDeclaration(){
     var ed=getActiveEditor();
