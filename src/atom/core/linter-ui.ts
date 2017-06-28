@@ -27,40 +27,16 @@ import {
 
 export function relint(editor:AtomCore.IEditor) {
     Promise.resolve("").then(editorManager.toggleEditorTools);
+
+    (<any>editor).getBuffer().emitter.emit("did-change", {
+        oldText: (<any>editor).getBuffer().getText(),
+        newText: (<any>editor).getBuffer().getText()
+    });
 }
 
-function lintFirstTime(linterApi: any, editor: AtomCore.IEditor) {
-    var editorPath = editor.getPath && editor.getPath();
+export function initEditorObservers(linter) {
 
-    var extName = editorPath && path.extname(editorPath);
-
-    var lowerCase = extName && extName.toLowerCase();
-
-    if(lowerCase === '.raml' || lowerCase === '.yaml' ) {
-        var linter = linterApi.getEditorLinter(editor);
-
-        lint(editor).then(messages => {
-            linterApi.setMessages(linter, messages);
-
-            var linterDestroyer = editor.onDidChange(() => {
-                destroyLinter(linterApi, linter);
-
-                linterDestroyer.dispose();
-            });
-        });
-    }
-}
-
-export function initEditorObservers(linterApi) {
-    // parserUtils.addLoadCallback(x => {
-    //     var manager = editorTools.aquireManager();
-    //
-    //     if(manager) {
-    //         manager.updateDetails();
-    //     }
-    // });
-
-    atom.workspace.observeTextEditors(editor => lintFirstTime(linterApi, editor));
+    atom.workspace.observeTextEditors(editor => relint(editor));
 
     return {
         dispose: () => {
