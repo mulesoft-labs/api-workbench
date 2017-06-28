@@ -22,7 +22,7 @@ cd api-workbench
 
 apm install
 
-npm build
+npm run build
 
 apm link
 ```
