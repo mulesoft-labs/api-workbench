@@ -16,7 +16,7 @@ Dependencies:
 Do uninstall mainstream api-workbench package in Atom preferences, if installed.
 
 ```
-git clone -b api-workbench-server --single-branch https://github.com/mulesoft/api-workbench.git
+git clone -b release/2.0.0-beta --single-branch https://github.com/mulesoft/api-workbench.git
 
 cd api-workbench
 
