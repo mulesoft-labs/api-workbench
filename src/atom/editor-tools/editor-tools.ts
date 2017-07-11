@@ -9,7 +9,7 @@ import atom = require('../core/atomWrapper');
 // import project=rp.project;
 import _=require("underscore")
 import pair = require("../../util/pair");
-// import detailsView=require("./details-view")
+import detailsView=require("./details-view")
 import outlineView=require("./outline-view")
 import UI=require("atom-ui-lib")
 import ramlServer = require("raml-language-server");
@@ -46,7 +46,7 @@ class EditorManager{
     private currentEditor:any;
 
     _view: outlineView.RamlOutline;
-    //_details: detailsView.RamlDetails;
+    _details: detailsView.RamlDetails;
 
     // ast: hl.IHighLevelNode;
     unitPath : string;
@@ -146,7 +146,7 @@ class EditorManager{
                     }
 
                     if (atom.workspace.paneForItem(this._view)) atom.workspace.paneForItem(this._view).destroy();
-                    // if (atom.workspace.paneForItem(this._details)) atom.workspace.paneForItem(this._details).destroy();
+                    if (atom.workspace.paneForItem(this._details)) atom.workspace.paneForItem(this._details).destroy();
                     this.opened = false;
                 }
             } catch (e) {
@@ -169,13 +169,13 @@ class EditorManager{
         return this._view;
     }
 
-    // private getDetails() {
-    //     if (!this._details) this._details = new detailsView.RamlDetails();
-    //     return this._details;
-    // }
+    private getDetails() {
+        if (!this._details) this._details = new detailsView.RamlDetails();
+        return this._details;
+    }
 
     updateDetails() {
-        // this.getDetails().update();
+        this.getDetails().update();
     }
 
     reparseAST() {
@@ -216,7 +216,7 @@ class EditorManager{
            return;
        }
        var items = pane.getItems();
-       return (/*items.indexOf(this.getDetails()) >= 0 || */items.indexOf(this._view) >= 0);
+       return (items.indexOf(this.getDetails()) >= 0 || items.indexOf(this._view) >= 0);
     }
 
     display() {
@@ -226,8 +226,8 @@ class EditorManager{
         if (!fpane) return;
         if (!aw.paneForItem(this.getOrCreateView()))
             doSplit(this.getOrCreateView());
-        // if (!aw.paneForItem(manager.getDetails()))
-        //     doSplit(this.getDetails(), SplitDirections.BOTTOM);
+        if (!aw.paneForItem(manager.getDetails()))
+            doSplit(this.getDetails(), SplitDirections.BOTTOM);
 
         this.opened = true;
     }
@@ -253,9 +253,9 @@ class EditorManager{
     // }
     
     private setViewsDisplayStyle(visible: boolean) {
-        // if(this._details && (<any>this)._details.element) {
-        //     (<any>this)._details.element.style.display = visible ? null : "none";
-        // }
+        if(this._details && (<any>this)._details.element) {
+            (<any>this)._details.element.style.display = visible ? null : "none";
+        }
 
         if(this._view && (<any>this)._view.element) {
             (<any>this)._view.element.style.display = visible ? null : "none";
@@ -358,7 +358,7 @@ class EditorManager{
     private addListenersOnMove(cedit) {
         var movingPane=false;
         atom.workspace.onDidAddPaneItem(event=> {
-            if (movingPane || this.isETPane(event.pane) == false || event.item == this.getOrCreateView() /*|| event.item == this.getDetails()*/) return event;
+            if (movingPane || this.isETPane(event.pane) == false || event.item == this.getOrCreateView() || event.item == this.getDetails()) return event;
             setTimeout(()=> {
                 try {
                     var fpane = atom.workspace.paneForItem(cedit);
@@ -443,12 +443,44 @@ class EditorManager{
         editor.setText(text);
     }
 
+    private isFromEdgeRow(): boolean {
+        var editor = this.getCurrentEditor()
+
+        if(!editor) {
+            return false;
+        }
+
+        var currentPosition = editor.getCursorBufferPosition();
+
+        if(!currentPosition) {
+            return false;
+        }
+
+        var currentRow = currentPosition.row;
+
+        var previousRow = editor.previousRow;
+
+        editor.previousRow = currentRow;
+
+        if(previousRow === undefined) {
+            return false;
+        }
+
+        if(previousRow === currentRow) {
+            return false;
+        }
+
+        if(previousRow === editor.getBuffer().getLastRow() || previousRow === 0) {
+            return true;
+        }
+    }
+
     updateViews() {
         //var cNode = this.getCurrentNode();
         var ds=new Date().getMilliseconds();
-        // if (this._details) {
-        //     this.getDetails().show(cNode);
-        // }
+        if (this._details) {
+            this.getDetails().show(manager.unitPath, manager.currentPosition, this.isFromEdgeRow());
+        }
         if (this._view) {
             this.getOrCreateView().setUnit(manager.unitPath);
             // this.getOrCreateView().setUnit(manager.ast);
