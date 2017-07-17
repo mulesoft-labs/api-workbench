@@ -299,9 +299,9 @@ class EditorManager{
 
         //we are not listening to the editor changes any more,
         //instead we are listening to the reports of the server that something is avilable, like the structure
-        // if (!(<any>editor).patched) {
-        //    this.addListenersToEditor( editor);
-        // }
+        if (!(<any>editor).patched) {
+           this.addListenersToEditor( editor);
+        }
 
         this.reparseAST();
 
@@ -316,10 +316,10 @@ class EditorManager{
         var buffer = cedit.getBuffer();
         buffer.onDidChange(x => {
             try {
-                this.reparseAST();
+                //this.reparseAST();
                 var pos = buffer.characterIndexForPosition(cedit.getCursorBufferPosition());
                 this.positionUpdated(pos);
-                this.scheduleViewsUpdate();
+                //this.scheduleViewsUpdate();
 
             } catch (e){
                 console.log(e);
@@ -505,6 +505,9 @@ class EditorManager{
 
     positionUpdated(newPosition) {
         this.currentPosition = newPosition;
+        if (this._details) {
+            this.getDetails().show(manager.unitPath, this.currentPosition, this.isFromEdgeRow());
+        }
         // if (this.ast){
         //     this._currentNode=this.ast.findElementAtOffset(this.currentPosition);
         // }

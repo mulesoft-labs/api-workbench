@@ -1137,27 +1137,27 @@ function buildItemInCategory(
     let item = null;
 
     if(detailsNode.type == "CHECKBOX"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new CheckBoxField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "JSONSCHEMA"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new JSONSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "XMLSCHEMA"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new XMLSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "MARKDOWN"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new MarkdownField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "SELECTBOX"
-        && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).options) {
+        && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).options !== null) {
         item = new SelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode);
     }
     else if(detailsNode.type == "MULTIEDITOR"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new SimpleMultiEditor(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "TREE") {
@@ -1170,22 +1170,25 @@ function buildItemInCategory(
         item = new TypeDisplayItem(detailsNode);
     }
     else if(detailsNode.type == "TYPESELECT"
-        && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).valueText !== null) {
         item = new TypeSelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode);
     }
     else if(detailsNode.type == "JSONEXAMPLE"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new ExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "XMLEXAMPLE"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new XMLExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
     else if(detailsNode.type == "ATTRIBUTETEXT"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText) {
+        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new PropertyEditorInfo(<ramlServer.DetailsValuedItemJSON>detailsNode);
     }
 
-
-    root.addItemToCategory(categoryName, item);
+    if (item != null) {
+        root.addItemToCategory(categoryName, item);
+    } else {
+        console.log("Can not recognize element " + detailsNode.type);
+    }
 }

@@ -94,6 +94,8 @@ export function updateDetailsPanel(detailsNode: ramlServer.DetailsItemJSON, pane
             panel.addChild(errLabel);
         }
 
+    } catch(Error){
+        throw Error;
     } finally {
 
         cfg.emitter.handlersByEventName['did-change']=cfgCh;
