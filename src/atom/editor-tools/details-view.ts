@@ -21,6 +21,7 @@ export class RamlDetails extends SC.Scrollable {
         super();
         (<any>this).addClass('raml-details');
 
+        ramlServer.getNodeClientConnection().onDetailsReport(report=>this.onDetailsReport(report))
     }
 
     getTitle() {
@@ -182,6 +183,19 @@ export class RamlDetails extends SC.Scrollable {
             })
 
         } catch (e) {}
+    }
+
+    onDetailsReport(report : ramlServer.IDetailsReport) {
+        if (report.uri != this._unitPath) return;
+        //if (this._position == report.position) return;
+
+        ramlServer.getNodeClientConnection().getLatestVersion(report.uri).then(latestVersion=>{
+
+            //ignoring outdated reports
+            if (report.version != null && report.version < latestVersion) return;
+
+            this.setResource(report.details);
+        })
     }
 }
 

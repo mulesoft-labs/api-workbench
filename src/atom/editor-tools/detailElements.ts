@@ -104,9 +104,14 @@ export class TypeDisplayItem extends Item{
     constructor(private detailsNode:ramlServer.DetailsItemJSON){
         super("Type " + detailsNode.title,"");
     }
-    // render(r:RenderingOptions){
-    //     return typeDisplay.render(this.detailsNode);
-    // }
+    render(r:RenderingOptions){
+        let container=new UI.WrapPanel();
+
+        container.setCaption(this.title());
+
+        return container;
+        //return typeDisplay.render(this.detailsNode);
+    }
     dispose(){
 
     }

@@ -97,6 +97,11 @@ class EditorManager{
         markOccurrences.clearOccurences(editor);
 
         this.markOccurrencesReconciler.schedule(new markOccurrences.MarkOccurrenceRunnable(editor, newBufferPosition));
+
+        let buffer = editor.getBuffer();
+        let pos = buffer.characterIndexForPosition(editor.getCursorBufferPosition());
+
+        ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
     }
 
     internalScheduleUpdateViews(count:number){
@@ -506,7 +511,8 @@ class EditorManager{
     positionUpdated(newPosition) {
         this.currentPosition = newPosition;
         if (this._details) {
-            this.getDetails().show(manager.unitPath, this.currentPosition, this.isFromEdgeRow());
+            ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, this.currentPosition);
+            // this.getDetails().show(manager.unitPath, this.currentPosition, this.isFromEdgeRow());
         }
         // if (this.ast){
         //     this._currentNode=this.ast.findElementAtOffset(this.currentPosition);
