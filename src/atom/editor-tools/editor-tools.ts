@@ -59,6 +59,18 @@ class EditorManager{
 
     private markOccurrencesReconciler;
 
+    opened: boolean = false;
+
+    private currentPosition: number;
+
+    private updateCount: number=0;
+
+    private outlineCount: number=0;
+
+    _cleanOutline=false;
+
+    performanceDebug=true;
+
     getPath(): string {
         console.log("ETM::GetPath");
         return this.currentEditor ? this.currentEditor.getPath() : null;
@@ -90,7 +102,9 @@ class EditorManager{
         this.addListenersForStructure();
     }
 
-    private updateCount: number=0;
+    public getCurrentPosition() : number {
+        return this.currentPosition;
+    }
 
     private cursorChanged(editor: atom.ITextEditor, newBufferPosition: Point) {
 
@@ -119,7 +133,6 @@ class EditorManager{
         }
     }
 
-    private outlineCount: number=0;
     internalScheduleOutlineUpdate(count:number){
         this.outlineCount=count;
         setTimeout(()=>{
@@ -383,9 +396,6 @@ class EditorManager{
 
     }
 
-    opened: boolean = false;
-
-    currentPosition: number;
     // _currentNode: hl.IHighLevelNode;
     // //_selectedNode: hl.IHighLevelNode;
 
@@ -497,8 +507,6 @@ class EditorManager{
         }
     }
 
-    _cleanOutline=false;
-
     updateOutline() {
 
         ramlServer.getNodeClientConnection().debug("Updating outline", "EditorManager", "updateOutline");
@@ -518,7 +526,6 @@ class EditorManager{
         //     this._currentNode=this.ast.findElementAtOffset(this.currentPosition);
         // }
     }
-    performanceDebug=true;
 
     placeholder: boolean = false;
 

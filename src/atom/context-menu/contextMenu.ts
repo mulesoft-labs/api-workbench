@@ -2,6 +2,8 @@
 
 import _ = require("underscore")
 import commandManager = require("../quick-commands/command-manager")
+import contextMenuInterfaces = require("./contextMenuInterfaces")
+import contextMenuImpl = require("./contextMenuImpl")
 
 var originalShowForEvent : (object : any, args : any)=>void
 
@@ -20,64 +22,68 @@ export function initialize() {
 
 
     atom.contextMenu.constructor.prototype.showForEvent = (event : any) => {
-        preMenuDisplay()
+        preMenuDisplay().then(()=>{
+            originalShowForEvent.apply(atom.contextMenu, [event]);
 
-        originalShowForEvent.apply(atom.contextMenu, [event]);
-
-        postMenuDisplay()
+            postMenuDisplay()
+        })
     }
 }
 
 var initialized = false;
 
-function preMenuDisplay() {
+function preMenuDisplay() : Promise<void> {
     try {
-        // var treeRoots:actions.IContextMenuItem[] = actions.calculateMenuItemsTree();
-        //
-        // var nodeSets:{[s:string] : AtomCore.IContextMenuItemSet} = {}
-        //
-        // cleanExistingSets();
-        // commandManager.deleteCommandsByTag(commandManager.DYNAMIC_COMMAND_TAG)
-        //
-        // treeRoots.forEach(node => {
-        //     var itemSet = nodeSets[node.selector]
-        //
-        //     if (!itemSet) {
-        //         itemSet = findOrCreateItemSet(node.selector);
-        //         nodeSets[node.selector] = itemSet;
-        //     }
-        //
-        //     var menuItem = constructAtomMenuItem(node)
-        //
-        //     itemSet.items.push(menuItem)
-        // })
+        return contextMenuImpl.calculateMenuItemsTree().then(
+            (treeRoots:contextMenuInterfaces.IContextMenuItem[])=>{
+
+            var nodeSets:{[s:string] : AtomCore.IContextMenuItemSet} = {}
+
+            cleanExistingSets();
+            commandManager.deleteCommandsByTag(commandManager.DYNAMIC_COMMAND_TAG)
+
+            treeRoots.forEach(node => {
+                var itemSet = nodeSets[node.selector]
+
+                if (!itemSet) {
+                    itemSet = findOrCreateItemSet(node.selector);
+                    nodeSets[node.selector] = itemSet;
+                }
+
+                var menuItem = constructAtomMenuItem(node)
+
+                itemSet.items.push(menuItem)
+            })
+        })
+
+
     } catch (Error) {
         console.log(Error.message)
     }
 }
 
-// function constructAtomMenuItem(node : actions.IContextMenuItem) : AtomCore.IContextMenuItem {
-//     var result : AtomCore.IContextMenuItem = {
-//         label : node.name,
-//     }
-//
-//     if (node.children.length > 0) {
-//         result.submenu = []
-//     } else {
-//         var commandName = "api-workbench:"+node.name
-//         var existingCommands = commandManager.listCommands()
-//         commandManager.addCommand(node.selector, commandName, node.onClick,
-//             commandManager.DYNAMIC_COMMAND_TAG)
-//         result.command = commandName
-//     }
-//
-//     node.children.forEach(child => {
-//         var childMenuItem = constructAtomMenuItem(child)
-//         result.submenu.push(childMenuItem)
-//     })
-//
-//     return result;
-// }
+function constructAtomMenuItem(node : contextMenuInterfaces.IContextMenuItem) : AtomCore.IContextMenuItem {
+    var result : AtomCore.IContextMenuItem = {
+        label : node.name,
+    }
+
+    if (node.children.length > 0) {
+        result.submenu = []
+    } else {
+        var commandName = "api-workbench:"+node.name
+        var existingCommands = commandManager.listCommands()
+        commandManager.addCommand(node.selector, commandName, node.onClick,
+            commandManager.DYNAMIC_COMMAND_TAG)
+        result.command = commandName
+    }
+
+    node.children.forEach(child => {
+        var childMenuItem = constructAtomMenuItem(child)
+        result.submenu.push(childMenuItem)
+    })
+
+    return result;
+}
 
 interface ITaggedItemSet extends AtomCore.IContextMenuItemSet {
     tag? : string

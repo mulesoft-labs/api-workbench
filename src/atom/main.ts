@@ -15,7 +15,7 @@ import commandManager = require("./quick-commands/command-manager")
 import contextMenu = require("./context-menu/contextMenu")
 // import quickFixActions = require("./context-menu/quickFix")
 // import actions = require("./context-menu/actions")
-
+import contextMenuImpl = require("./context-menu/contextMenuImpl")
 
 module package_entry_point {
 
@@ -50,6 +50,8 @@ module package_entry_point {
                 // actions.register();
 
                 editorTools.initEditorTools()
+
+                contextMenuImpl.initializeActionBasedMenu('atom-text-editor[data-grammar="source raml"],.raml-outline')
             })
     }
 
