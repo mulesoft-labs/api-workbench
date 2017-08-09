@@ -43,7 +43,7 @@ interface IChangeCommand {
 
 class EditorManager{
 
-    private currentEditor:any;
+    private currentEditor:atom.ITextEditor;
 
     _view: outlineView.RamlOutline;
     _details: detailsView.RamlDetails;
@@ -473,9 +473,9 @@ class EditorManager{
 
         var currentRow = currentPosition.row;
 
-        var previousRow = editor.previousRow;
+        var previousRow = (<any>editor).previousRow;
 
-        editor.previousRow = currentRow;
+        (<any>editor).previousRow = currentRow;
 
         if(previousRow === undefined) {
             return false;
@@ -485,7 +485,7 @@ class EditorManager{
             return false;
         }
 
-        if(previousRow === editor.getBuffer().getLastRow() || previousRow === 0) {
+        if(previousRow === (<any>editor.getBuffer()).getLastRow() || previousRow === 0) {
             return true;
         }
     }

@@ -170,7 +170,25 @@ function onClickHandler(path, action, position) {
         path,
         action,
         position
-    )
+    ).then(changes=>{
+        let editorManager = editorTools.aquireManager();
+        if (!editorManager) return Promise.resolve([]);
+
+        let path = editorManager.getPath();
+
+        //TODO handle all cases
+        for (let change of changes) {
+            if (change.uri == path && change.text != null) {
+
+                editorManager.getCurrentEditor().getBuffer().setText(change.text);
+
+                ramlServer.getNodeClientConnection().documentChanged({
+                    uri: path,
+                    text: change.text
+                })
+            }
+        }
+    })
 }
 
 /**
