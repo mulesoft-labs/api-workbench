@@ -116,6 +116,8 @@ class EditorManager{
         let pos = buffer.characterIndexForPosition(editor.getCursorBufferPosition());
 
         ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
+
+        this.currentPosition = pos;
     }
 
     internalScheduleUpdateViews(count:number){
