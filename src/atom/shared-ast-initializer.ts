@@ -11,7 +11,19 @@ import unitUtils = require("./util/unit")
 import parser=require("raml-1-parser");
 import hl=parser.hl;
 import ll=parser.ll;
-
+import dialects=require("./dialects");
+dialects.initDialects();
+import ds=parser.ds;
+// var u=ds.registerRAMLDialect("Async","0.1");
+//
+// //import fs=require("fs");
+//
+// //parser.loadSync();
+// var as=new ds.NodeClass("Async",u,"");
+// as.addSuperType(<any>u.type("LibraryBase"));
+// u.register(as);
+// var p=ds.prop("hello","",as,<any>u.type("NumberType"));
+// p.unmerge();
 export function initialize() {
     var editorProvider = {
         getCurrentEditor() {

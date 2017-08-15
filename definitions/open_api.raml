@@ -1,0 +1,234 @@
+#%RAML 1.0 Library
+uses:
+  lc: ./langCore.raml
+usage: Definition of OAS 2.0
+types:
+  mimetype:
+    type: string
+  markdown:
+    type: string
+  pointer:
+    type: string
+  url:
+    type: string
+  scheme:
+    enum: ["http","https","ws","wss"]
+    type: string
+  ExternalDocumentationObject:
+    properties:
+      description?:
+        type: markdown
+        description: A short description of the target documentation. GFM syntax can be used for rich text representation.
+      url:
+        type: url
+        description: The URL for the target documentation. Value MUST be in the format of a URL.
+  #Security
+  SecurityDefinitionsObject:
+    discriminator: type
+    properties:
+      description: markdown
+      type:
+        enum: ["basic","apiKey","oauth2"]
+  ApiKey:
+    discriminatorValue: "apiKey"
+    type: SecurityDefinitionsObject
+    properties:
+      name: string
+      in:
+        enum: [query,header]
+  OAuth2:
+    type: SecurityDefinitionsObject
+    discriminatorValue: oauth2
+    properties:
+      flow:
+        enum: ["implicit","password","application","accessCode"]
+      authorizationUrl?: url
+      tokenUrl?: url
+      scopes?:
+        properties:
+          //: string
+  Basic:
+    type: SecurityDefinitionsObject
+    discriminatorValue: basic
+  ##Data
+  XMLInfoObject:
+    properties:
+      name?: string
+      wrapped?: boolean
+      attribute?: boolean
+
+  ItemsObject:
+    type: object
+    discriminator: type
+    properties:
+      description?:
+        type: markdown
+        description: "A brief description. This could contain examples of use. GFM syntax can be used for rich text representation."
+
+      type:
+        type: string
+
+        enum: ["string","number","integer","boolean","array","file","object"]
+        description: 'Required. The type of the parameter.'
+      format?: string
+      allowEmptyValue?: boolean
+      collectionFormat?:
+        type: string
+        enum: ["csv","ssv","tsv","pipes","multi"]
+      default?: string | number | boolean
+      maximum?: number
+      exclusiveMaximum?: boolean
+      minimum?: number
+      exclusiveMinimum?: boolean
+      maxLength?: number
+      minLength?: number
+      example?: string
+      pattern?: string
+      maxItems?: number
+      minItems?: number
+      uniqueItems?: boolean
+      xml?: XMLInfoObject
+      enum?: string[]
+      multipleOf?: number
+      '$ref': string
+  ArrayItemsObject:
+      type: ItemsObject
+      discriminatorValue: array
+      properties:
+        items?: ItemsObject
+  ObjectItemsObject:
+      type: ItemsObject
+      discriminatorValue: object
+      properties:
+        additionalProperties?: ItemsObject
+  ParameterObject:
+    type: ItemsObject
+    properties:
+      name: string
+      in:
+        enum: ["query", "header", "path", "formData","body"]
+      required?: boolean
+      schema?: ItemsObject
+      items?: ItemsObject
+  HeadersObject:
+  SchemaObject:
+    type: ItemsObject
+    properties:
+      properties?:
+        properties:
+
+          //: ItemsObject
+      title?: string
+      items?: ItemsObject
+      description?: markdown
+      default?: any
+      required?: pointer[]
+      descriminator?: pointer
+      externalDocs?: ExternalDocumentationObject
+      allOf?: ItemsObject[]
+  DefinitionObject:
+    type: SchemaObject
+  ##Operations
+  OperationObject:
+    properties:
+      parameters?:
+        description: A list of parameters that are applicable for all the operations described under this path. These parameters can be overridden at the operation level, but cannot be removed there. The list MUST NOT include duplicated parameters. A unique parameter is defined by a combination of a name and location. The list can use the Reference Object to link to parameters that are defined at the Swagger Object's parameters. There can be one 'body' parameter at most."
+        type: ParameterObject[]
+      tags?:
+        description: A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
+        type: string[]
+      description?:
+        type: markdown
+        description: A verbose explanation of the operation behavior. GFM syntax can be used for rich text representation.
+      summary?:
+        description: A list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
+      externalDocs?: ExternalDocumentationObject
+      operationId?:
+        description: Unique string used to identify the operation. The id MUST be unique among all operations described in the API. Tools and libraries MAY use the operationId to uniquely identify an operation, therefore, it is recommended to follow common programming naming conventions.
+        type: string
+      consumes?:
+        description: A list of MIME types the operation can consume. This overrides the consumes definition at the Swagger Object. An empty value MAY be used to clear the global definition. Value MUST be as described under Mime Types.
+        type: mimetype[]
+      produces?:
+        description: A list of MIME types the operation can produce. This overrides the consumes definition at the Swagger Object. An empty value MAY be used to clear the global definition. Value MUST be as described under Mime Types.
+        type: mimetype[]
+      responses:
+        description: The list of possible responses as they are returned from executing this operation.
+        properties:
+          //: ResponseObject
+      schemes?:
+        description: |
+           The transfer protocol for the operation. Values MUST be from the list: "http", "https", "ws", "wss". The value overrides the Swagger Object schemes definition."
+        type: scheme[]
+      deprecated?:
+        type: boolean
+        description: Declares this operation to be deprecated. Usage of the declared operation should be refrained. Default value is false.
+      security?:
+        type: array
+        items:
+          properties:
+            //: string[]
+  ResponseObject:
+      properties:
+        description?: markdown
+        schema?: ItemsObject
+        headers?:
+          properties:
+            //: ItemsObject
+  PathItemsObject:
+    properties:
+      parameters: ParameterObject[]
+      /get|put|post|head|delete/: OperationObject
+  #Generic
+  ContactObject:
+    properties:
+      name: string
+      url: url
+      email: string
+  LicenseObject:
+    properties:
+       name: string
+       url: url
+  TagObject:
+    properties:
+       name: string
+       description?: string
+       externalDocs: ExternalDocumentationObject
+  InfoObject:
+    properties:
+      title: string
+      description: markdown
+      termsOfService: string
+      version: string
+      contact: ContactObject
+      license: LicenseObject
+  Swagger:
+    type: lc.RootDomainElement
+    properties:
+      swagger: string
+      info: InfoObject
+      host: string
+      basePath: string
+      schemes: scheme[]
+      consumes: mimetype[]
+      produces: mimetype[]
+      paths:
+        properties:
+          //: PathItemsObject
+      definitions:
+        properties:
+          //: DefinitionObject
+      parameters:
+        properties:
+          //: ParameterObject
+      responses:
+        properties:
+          //: ResponseObject
+      securityDefinitions:
+        properties:
+          //: SecurityDefinitionsObject
+      security:
+         properties:
+           //: any
+      tags: TagObject[]
+      externalDocs: ExternalDocumentationObject
