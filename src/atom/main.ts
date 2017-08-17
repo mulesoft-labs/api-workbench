@@ -9,6 +9,7 @@ import provider=require("./suggestion/provider")
 import quickOutline=require("./quick-outline/quick-outline")
 import decl=require("./dialogs/assist-utils")
 import linterUI=require("./core/linter-ui")
+import patchElements=require("./core/patchElements")
 var CompositeDisposable = require('atom').CompositeDisposable;
 import sharedASTInitializer = require("./shared-ast-initializer")
 import commandManager = require("./quick-commands/command-manager")
@@ -41,6 +42,8 @@ module package_entry_point {
                 subscriptions.add(atom.workspace.addOpener(Console.opener))
                 //subscriptions.add(atom.workspace.addOpener(RamlScriptReport.opener))
 
+                patchElements.doPatch();
+                
                 commandManager.initialize()
                 contextMenu.initialize()
                 sharedASTInitializer.initialize()
