@@ -4,6 +4,8 @@ import ramlServer = require("raml-language-server")
 import contextMenu = require("./contextMenuInterfaces")
 import editorTools = require("../editor-tools/editor-tools")
 
+import uilibsModule = require("atom-ui-lib")
+
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 
 /**
@@ -240,5 +242,21 @@ export function initializeActionBasedMenu(selector? : string) {
     }
 
     registerContributor(editorContextMenuContributor)
+    handleActionUI();
+
     actionBasedMenuInitialized = true;
+}
+
+function handleActionUI() {
+    ramlServer.getNodeClientConnection().onDisplayActionUI(uiDisplayRequest => {
+        let code = uiDisplayRequest.uiCode;
+
+        var IDE = atom;
+        var UI = uilibsModule;
+
+        let evalResult : any = eval(code);
+        let result = evalResult.result;
+
+        return Promise.resolve(result);
+    })
 }
