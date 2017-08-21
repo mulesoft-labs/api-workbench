@@ -71,6 +71,8 @@ class EditorManager{
 
     performanceDebug=true;
 
+    private static DETAILS_SUPPORT = false
+
     getPath(): string {
         console.log("ETM::GetPath");
         return this.currentEditor ? this.currentEditor.getPath() : null;
@@ -190,6 +192,7 @@ class EditorManager{
     }
 
     private getDetails() {
+        if (!EditorManager.DETAILS_SUPPORT) return null;
         if (!this._details) this._details = new detailsView.RamlDetails();
         return this._details;
     }
@@ -236,7 +239,8 @@ class EditorManager{
            return;
        }
        var items = pane.getItems();
-       return (items.indexOf(this.getDetails()) >= 0 || items.indexOf(this._view) >= 0);
+       return ((EditorManager.DETAILS_SUPPORT && items.indexOf(this.getDetails()) >= 0)
+        || items.indexOf(this._view) >= 0);
     }
 
     display() {
@@ -246,8 +250,11 @@ class EditorManager{
         if (!fpane) return;
         if (!aw.paneForItem(this.getOrCreateView()))
             doSplit(this.getOrCreateView());
-        if (!aw.paneForItem(manager.getDetails()))
-            doSplit(this.getDetails(), SplitDirections.BOTTOM);
+
+        if (EditorManager.DETAILS_SUPPORT) {
+            if (!aw.paneForItem(manager.getDetails()))
+                doSplit(this.getDetails(), SplitDirections.BOTTOM);
+        }
 
         this.opened = true;
     }
@@ -378,7 +385,7 @@ class EditorManager{
     private addListenersOnMove(cedit) {
         var movingPane=false;
         atom.workspace.onDidAddPaneItem(event=> {
-            if (movingPane || this.isETPane(event.pane) == false || event.item == this.getOrCreateView() || event.item == this.getDetails()) return event;
+            if (movingPane || this.isETPane(event.pane) == false || event.item == this.getOrCreateView() || (EditorManager.DETAILS_SUPPORT && event.item == this.getDetails())) return event;
             setTimeout(()=> {
                 try {
                     var fpane = atom.workspace.paneForItem(cedit);
@@ -495,7 +502,7 @@ class EditorManager{
     updateViews() {
         //var cNode = this.getCurrentNode();
         var ds=new Date().getMilliseconds();
-        if (this._details) {
+        if (EditorManager.DETAILS_SUPPORT && this._details) {
             this.getDetails().show(manager.unitPath, manager.currentPosition, this.isFromEdgeRow());
         }
         if (this._view) {
