@@ -1001,6 +1001,27 @@ export class ExtractLibraryDialog extends AbstractlMoveElementsDialog {
 
         var libraryClass = <def.NodeClass>universe.type(universeModule.Universe10.Library.name);
 
+        var currentFilePath = this.getParentNode().lowLevel().unit().absolutePath();
+
+        var dist = path.resolve(path.dirname(currentFilePath), libraryUnit.absolutePath());
+
+        findIncludesInside(stubTreeRoot.lowLevel()).forEach(include => {
+            var includePath = include.includePath();
+
+            if(path.isAbsolute(includePath)) {
+                return;
+            }
+
+            var newPath = path.relative(path.dirname(dist), path.resolve(path.dirname(currentFilePath), includePath));
+            
+            var yamlNode: any = (<any>include)._node;
+            
+            if(yamlNode && yamlNode.value) {
+                yamlNode.value.value = newPath;
+                yamlNode.value.rawValue = newPath;
+            }
+        });
+
         movedNodes.forEach(movedNode => {
             var librariesToExport = libraries.filter(library => {
                 return _.find(library.findReferences(), reference => this.isParentOf(movedNode, reference)) ? true : false
@@ -1920,4 +1941,24 @@ function isWebPath(str):boolean {
     if (str == null) return false;
 
     return util.stringStartsWith(str,"http://") || util.stringStartsWith(str,"https://");
+}
+
+function findIncludesInside(node: lowLevel.ILowLevelASTNode): lowLevel.ILowLevelASTNode[] {
+    var children: lowLevel.ILowLevelASTNode[] = node.children();
+
+    var result = [];
+
+    if(children && children.length > 0) {
+        children.forEach(child => {
+            if(child.includePath()) {
+                result.push(child);
+
+                return;
+            }
+
+            result = result.concat(findIncludesInside(child));
+        });
+    }
+
+    return result;
 }

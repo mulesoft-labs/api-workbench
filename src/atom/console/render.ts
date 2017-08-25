@@ -21,7 +21,7 @@ import atomUtil = require('../util/atom')
 var services = rp.ds;
 
 import ConsoleView = require('./console-view')
-import {BasicNode} from "raml-1-parser/dist/raml1/wrapped-ast/parserCoreApi";
+//import {BasicNode} from "raml-1-parser/dist/raml1/wrapped-ast/parserCoreApi";
 
 //TODO consider moving this set of types into a parser, might be useful for other parser users.
 //Another (better) option is to extract superinterfaces from both API hierarchies instead

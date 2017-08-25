@@ -483,6 +483,8 @@ export class RAMLConsoleView extends SpacePenViews.ScrollView {
       this.errors = errors
 
       if (!errors.length) {
+        (<any>baseUnit)._hl = null;
+
         var originalRoot = baseUnit.highLevel().asElement().wrapperNode();
         this.raml = <RamlWrapper1.Api | RamlWrapper08.Api>
             rp.expander.expandTraitsAndResourceTypes(originalRoot);
@@ -586,11 +588,11 @@ export class RAMLConsoleView extends SpacePenViews.ScrollView {
     this.updateRAML()
   }
 
-  updateUnit (path: string, contents: string) {
-    this.getUnit(path).updateContent(this.readFileSync(path))
-    this.updateRAML()
+  updateUnit(path: string, contents: string) {
+    this.getUnit(path).updateContent(contents);
+    
+    this.updateRAML();
   }
-
 }
 export class FSResolverImpl {
 

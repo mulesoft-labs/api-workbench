@@ -108,28 +108,28 @@ function actualLint(textEditor:AtomCore.IEditor) {
     }
     var result:any[]=[];
     var acceptor=new Acceptor(textEditor, result, astNode.root());
-    var c=astNode.lowLevel() ? astNode.lowLevel().unit().contents() : "";
-    var tab=0;
-    while (true) {
-        var tab:number = c.indexOf('\t',tab)
-        if (tab != -1) {
-            var p1 = textEditor.getBuffer().positionForCharacterIndex(tab);
-            var p2 = textEditor.getBuffer().positionForCharacterIndex(tab + 1);
-            var t = "Using tabs  can lead to unpredictable results";
-            var message = {
-                type: ("Warning"),
-                filePath: textEditor.getPath(),
-                text: t,
-                trace: [],
-                range: [[p1.row, p1.column], [p2.row, p2.column]]
-            }
-            result.push(message);
-            tab++;
-        }
-        else{
-            break;
-        }
-    }
+    // var c=astNode.lowLevel() ? astNode.lowLevel().unit().contents() : "";
+    // var tab=0;
+    // while (true) {
+    //     var tab:number = c.indexOf('\t',tab)
+    //     if (tab != -1) {
+    //         var p1 = textEditor.getBuffer().positionForCharacterIndex(tab);
+    //         var p2 = textEditor.getBuffer().positionForCharacterIndex(tab + 1);
+    //         var t = "Using tabs  can lead to unpredictable results";
+    //         var message = {
+    //             type: ("Warning"),
+    //             filePath: textEditor.getPath(),
+    //             text: t,
+    //             trace: [],
+    //             range: [[p1.row, p1.column], [p2.row, p2.column]]
+    //         }
+    //         result.push(message);
+    //         tab++;
+    //     }
+    //     else{
+    //         break;
+    //     }
+    // }
     if (!astNode.lowLevel()){
         return [];
     }
