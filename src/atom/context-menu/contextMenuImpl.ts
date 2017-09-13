@@ -219,6 +219,10 @@ export function initializeActionBasedMenu(selector? : string) {
                 var result : contextMenu.IContextMenuItem[] = []
 
                 currentActions.forEach(action => {
+                    if (action.hasUI) {
+                        return;
+                    }
+
                     result.push({
 
                         selector : selector,
