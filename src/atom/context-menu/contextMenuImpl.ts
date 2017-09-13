@@ -247,6 +247,8 @@ export function initializeActionBasedMenu(selector? : string) {
 
     registerContributor(editorContextMenuContributor)
     handleActionUI();
+    configureServerActions();
+
 
     actionBasedMenuInitialized = true;
 }
@@ -263,4 +265,12 @@ function handleActionUI() {
 
         return Promise.resolve(result);
     })
+}
+
+function configureServerActions() {
+    ramlServer.getNodeClientConnection().setServerConfiguration({
+        actionsConfiguration: {
+            enableUIActions: false
+        }
+    });
 }
