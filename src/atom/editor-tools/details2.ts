@@ -27,6 +27,8 @@ import typeDisplay=require("./typeDisplay")
 import defaultValues = require('./default-values');
 import resourceRegistry = rp.utils;
 
+import yaml = require("yaml-ast-parser");
+
 interface RenderingOptions{
     showDescription?:boolean;
     showHeader?:boolean;
@@ -226,7 +228,7 @@ class Category extends Item{
     clearErrors(){
         this._children.forEach(x=>x.clearErrors())
     }
-    update(i:Item){
+    update(i:Item, node?: hl.IHighLevelNode) {
 
     }
 }
@@ -323,7 +325,8 @@ class TopLevelNode extends Category{
         this.node=null;
     }
 
-    update(i:Item){
+    update(i:Item, newNode?: hl.IHighLevelNode){
+        this.node = newNode || this.node;
         //this.listeners.forEach(x=>x(i));
         if (!this._panel){
             return;
@@ -487,6 +490,8 @@ class PropertyEditorInfo extends Item{
     fromEditorToModel(newValue? : any, oldValue? : any){
         var field=this.fld;
 
+        var newNode = false;
+
         var vl=this.toLocalValue(field.getBinding().get());
 
         if (vl==null){
@@ -526,18 +531,49 @@ class PropertyEditorInfo extends Item{
                 }
                 return;
             }
-            
+
             if(this.node.lowLevel().includePath() && !this.node.lowLevel().unit().resolve(this.node.lowLevel().includePath())) {
                 return;
             }
-            
-            attr = this.node.attrOrCreate(this.property.nameId());
-
-            attr.remove();
 
             attr = this.node.attrOrCreate(this.property.nameId());
-            
+
             attr.setValue("" + vl);
+
+            var attrLowLevel = attr.lowLevel();
+
+            if(attrLowLevel.kind() === yaml.Kind.MAPPING) {
+                var asMapping =  (<any>attrLowLevel).asMapping && (<any>attrLowLevel).asMapping();
+
+                var mappingValue = asMapping && asMapping.value;
+
+                if(mappingValue && mappingValue.kind === yaml.Kind.SCALAR) {
+                    mappingValue.rawValue = "" + vl;
+                }
+
+                if(this.node.parent() && this.node.lowLevel().parent() && this.node.property()) {
+                    var rootNode = this.node.root();
+                    var propId = this.node.property().nameId();
+
+                    var parent = (<any>this).node.parent();
+
+                    parent.resetRuntimeTypes();
+                    parent.resetAuxilaryState();
+                    parent.resetChildren();
+
+                    (<any>rootNode).setTypes(null);
+                    rootNode.lowLevel().actual().types = null;
+                    rootNode.children();
+
+                    parent.children();
+
+                    newNode = true;
+
+                    this.node = parent.element(propId) || parent.attr(propId);
+
+                    attr = this.node.attrOrCreate(this.property.nameId());
+                }
+            }
 
             delete this.node['_ptype'];
         }
@@ -552,10 +588,10 @@ class PropertyEditorInfo extends Item{
         if (attr.lowLevel() && attr.lowLevel().unit() && attr.lowLevel().unit() != this.node.lowLevel().unit()) {
             provider.saveUnit(attr.lowLevel().unit());
         }
-        
+
         var root=this.root()
         if (root){
-            root.update(this);
+            root.update(this, newNode ? this.node : null);
         }
     }
 
