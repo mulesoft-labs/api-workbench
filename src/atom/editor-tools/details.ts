@@ -72,15 +72,15 @@ export function updateDetailsPanel(node: hl.IHighLevelNode, panel: UI.Panel, upd
             else return a.nameId().localeCompare(b.nameId());
         }
         if (false && nodes[node.definition().nameId()] && !node.definition().getAdapter(def.RAMLService).isUserDefined()) {
-            var info = nodes[node.definition().nameId()];
-            info.properties.forEach(pn=> {
-                try {
-                    //panel.addChild(property2(node, pn, <UI.TextElement<any>> descLabel2, updateTextOnDone));
-                    empty = false;
-                } catch (e) {
-                    console.log("Error while updating details panel for node ", node, "(property ", pn, "): ", e);
-                }
-            });
+            // var info = nodes[node.definition().nameId()];
+            // info.properties.forEach(pn=> {
+            //     try {
+            //         //panel.addChild(property2(node, pn, <UI.TextElement<any>> descLabel2, updateTextOnDone));
+            //         empty = false;
+            //     } catch (e) {
+            //         console.log("Error while updating details panel for node ", node, "(property ", pn, "): ", e);
+            //     }
+            // });
         }
         else {
             var item = details2.buildItem(node, false);

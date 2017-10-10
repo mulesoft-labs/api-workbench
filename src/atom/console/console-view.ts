@@ -630,7 +630,9 @@ export class FSResolverImpl {
     return new Promise(function(reject,resolve){
       fs.readdir(path,(err,files)=>{
         if(err!=null){
-          return reject(err);
+          var message: string[] = <any>err;
+
+          return reject(message);
         }
         resolve(files);
       });

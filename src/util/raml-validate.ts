@@ -247,7 +247,8 @@ function validate () {
         var validations = {}
 
         Object.keys(parameterMap).forEach(function (key) {
-            validations[key] = rule(parameterMap[key])
+
+            validations[key] = rule(<Raml08Parser.NamedParameter>parameterMap[key])
         })
 
         return function (src?: ParameterValueMap): ValidationsResult {

@@ -2,8 +2,10 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "lib": [ "dom", "es2015", "scripthost", "es2015.promise" ],
     "declaration": false,
     "noImplicitAny": false,
+    "moduleResolution": "node",
     "removeComments": false,
     "sourceMap": true
   },

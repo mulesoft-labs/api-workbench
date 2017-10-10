@@ -132,8 +132,9 @@ function open (uri: string, state?: ConsoleView.ConsoleState): Promise<ConsoleVi
   var workspaceOptions = getWorkspaceOptions()
   var previousActivePane = atom.workspace.getActivePane()
 
-  return atom.workspace.open(uri, workspaceOptions)
-    .then(function (view) {
+  var opened: Promise<ConsoleView.RAMLConsoleView> = <any>atom.workspace.open(uri, workspaceOptions);
+
+  return opened.then((view) => {
       (<ConsoleView.RAMLConsoleView> view).setState(state)
 
       return view
