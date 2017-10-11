@@ -22,7 +22,9 @@ cd api-workbench
 
 apm install
 
-npm run build
+sudo npm run devInstall
+
+sudo npm run buildall
 
 apm link
 ```
