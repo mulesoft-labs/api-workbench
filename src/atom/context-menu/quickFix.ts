@@ -795,6 +795,8 @@ export function initialize() {
 
         name: "Create global schema",
 
+        id: "Create global schema",
+
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
         category: ["Code"],
@@ -809,6 +811,8 @@ export function initialize() {
     contextActions.addAction({
 
         name: "Move resource",
+
+        id: "Move resource",
 
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
@@ -829,6 +833,8 @@ export function initialize() {
 
         name: "Extract Resource Type",
 
+        id: "Extract Resource Type",
+
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
         category: ["Refactoring"],
@@ -846,6 +852,8 @@ export function initialize() {
 
         name: "Extract Trait",
 
+        id: "Extract Trait",
+
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
         category: ["Refactoring"],
@@ -861,6 +869,7 @@ export function initialize() {
 
     contextActions.addAction({
         name: "Convert JSON schema to type",
+        id: "Convert JSON schema to type",
         target: contextActions.TARGET_RAML_EDITOR_NODE,
         category: ["Refactoring"],
         onClick: (state)=> {
@@ -873,6 +882,8 @@ export function initialize() {
     contextActions.addAction({
 
         name: "Extract Library",
+
+        id: "Extract Library",
 
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
@@ -891,6 +902,8 @@ export function initialize() {
 
         name: "Extract Overlay",
 
+        id: "Extract Overlay",
+
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
         category: ["Code"],
@@ -907,6 +920,8 @@ export function initialize() {
     contextActions.addAction({
 
         name: "Modify Overlay",
+
+        id: "Modify Overlay",
 
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
@@ -925,6 +940,8 @@ export function initialize() {
 
         name: "Pull Up",
 
+        id: "Pull Up",
+
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
         category: ["Refactoring"],
@@ -941,6 +958,8 @@ export function initialize() {
     contextActions.addAction({
 
         name: "Extract Supertype",
+
+        id: "Extract Supertype",
 
         target: contextActions.TARGET_RAML_EDITOR_NODE,
 
