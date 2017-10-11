@@ -28,3 +28,5 @@ sudo npm run buildall
 
 apm link
 ```
+
+Using sudo is optional, but, depending on current user access rights it may be required.
