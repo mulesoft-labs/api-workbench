@@ -11,7 +11,7 @@ import xmlutil=require("../../util/xmlutil")
 import shemagen=require("../../util/schemaGenerator")
 import SpacePenViews = require('atom-space-pen-views')
 import tooltip=require("../core/tooltip-manager")
-import contextActions = require("raml-actions")
+//import contextActions = require("raml-actions")
 import assistUtils = require("../dialogs/assist-utils");
 import ramlServer = require("raml-language-server");
 
