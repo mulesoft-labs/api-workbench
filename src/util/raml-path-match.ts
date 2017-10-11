@@ -64,7 +64,7 @@ function toRegExp (path: string, parameters: Raml08Parser.NamedParameterMap, key
             prefix = prefix ? '\\' + prefix : ''
 
             // TODO: Support an array of parameters.
-            var param: Raml08Parser.BasicNamedParameter = parameters[key]
+            var param: Raml08Parser.BasicNamedParameter = <any>parameters[key]
             var capture = param && REGEXP_MATCH[param.type] || '[^' + (prefix || '\\/') + ']+'
             var optional = param && param.required === false
 

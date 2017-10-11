@@ -121,7 +121,7 @@ gulp.task('typescript:prepare-compile', [], function () {
   var hasError = false;
   var tsResult = gulp.src(['src/raml1/tools/prepare.ts'])
       .pipe(sourcemaps.init())
-      .pipe(ts(tsProject))
+      .pipe(tsProject())
       .on('error', function () {
         hasError = true;
       })
@@ -142,7 +142,7 @@ gulp.task('typescript:compile', [
   var hasError = false;
   var tsResult = gulp.src(['**/*.ts', '!java/**', '!node_modules/**', '!examples/**', '!atom-package/**', '!custom_typings/**', '!typings/**'])
     .pipe(sourcemaps.init())
-    .pipe(ts(tsProject))
+      .pipe(tsProject())
     .on('error', function () {
       hasError = true;
     })

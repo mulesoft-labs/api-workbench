@@ -163,8 +163,8 @@ class EditorManager{
                     // this._currentNode=null;
                     this.currentEditor=null;
 
-                    if(global.cleanCache) {
-                        global.cleanCache();
+                    if((global as any).cleanCache) {
+                        (global as any).cleanCache();
                     }
 
                     if (atom.workspace.paneForItem(this._view)) atom.workspace.paneForItem(this._view).destroy();

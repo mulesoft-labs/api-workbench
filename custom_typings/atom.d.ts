@@ -91,13 +91,25 @@ declare module AtomCore {
     itemForURI(uri: string): IEditor
   }
 
+  interface Point{
+    row:number;
+    column:number;
+  }
+
   interface IEditor {
     getLastCursor (): ICursor
     onDidChange (cb: () => any): Disposable
     onDidStopChanging (cb: () => any): Disposable
     onDidChangePath (cb: () => any): Disposable
     onDidDestroy (cb: () => any): Disposable
-    onDidChangeCursorPosition (cb: () => any): Disposable
+    onDidChangeCursorPosition(callback: (event:{
+                                           oldBufferPosition:Point,
+                                           oldScreenPosition:Point,
+                                           newBufferPosition:Point,
+                                           newScreenPosition:Point,
+                                           textChanged:boolean,
+                                           cursor: ICursor
+                                         })=>void);
   }
 
   interface IPackageManager {
