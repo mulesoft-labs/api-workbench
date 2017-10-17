@@ -358,7 +358,7 @@ class EditorManager{
         //     this.positionUpdated(buffer.characterIndexForPosition(cedit.getCursorBufferPosition()));
         //     this.scheduleViewsUpdate();
         // });
-        // this.addListenersOnMove(cedit);
+        this.addListenersOnMove(cedit);
         (<any>this.currentEditor).patched = true;
     }
 
@@ -586,6 +586,6 @@ export function doSplit(value:any,dir:SplitDirections=SplitDirections.RIGHT){
             newPane=atom.workspace.getActivePane().splitRight({});
             break;
     }
-    newPane.addItem(value,0)
+    newPane.addItem(value)
     return newPane;
 }
