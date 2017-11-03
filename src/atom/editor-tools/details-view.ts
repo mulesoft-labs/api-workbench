@@ -14,14 +14,22 @@ import atom = require('../core/atomWrapper');
 import _=require("underscore")
 import pair = require("../../util/pair");
 import ramlServer = require("raml-language-server");
+import {
+    Reconciler
+} from "./reconciler"
 
 export class RamlDetails extends SC.Scrollable {
+
+    private reconciler: Reconciler;
 
     constructor(private allowStructureChanges: boolean = true) {
         super();
         (<any>this).addClass('raml-details');
 
-        ramlServer.getNodeClientConnection().onDetailsReport(report=>this.onDetailsReport(report))
+        const connection = ramlServer.getNodeClientConnection();
+        connection.onDetailsReport(report=>this.onDetailsReport(report))
+
+        this.reconciler = new Reconciler(connection, 300);
     }
 
     getTitle() {
@@ -120,7 +128,7 @@ export class RamlDetails extends SC.Scrollable {
     schemaView:UI.BasicComponent<any>;
 
 
-    private setResource(detailsNode: ramlServer.DetailsItemJSON) {
+    private setResource(detailsNode: ramlServer.DetailsItemJSON, context: details.DetailsContext) {
         if (this.wasSchema){
             this.schemaView.dispose();
             this.schemaView=null;
@@ -128,14 +136,15 @@ export class RamlDetails extends SC.Scrollable {
         this.wasSchema=false;
 
         window["detailsnode"] = detailsNode;
+        window["detailscontext"] = context;
 
         if (detailsNode == null) this.displayEmpty();
-        details.updateDetailsPanel(detailsNode, this.container, true);
+        details.updateDetailsPanel(detailsNode, context, this.container, true);
     }
 
     update() {
         if(window["detailsnode"]) {
-            this.setResource(window["detailsnode"]);
+            this.setResource(window["detailsnode"], window["detailscontext"]);
         }
     }
 
@@ -156,6 +165,7 @@ export class RamlDetails extends SC.Scrollable {
         this.container.dispose();
         this.container=null;
         window["detailsnode"]=null;
+        window["detailscontext"]=null;
         this._children=[];
         if (details.oldItem){
             details.oldItem.detach();
@@ -170,7 +180,9 @@ export class RamlDetails extends SC.Scrollable {
     show(unitPath: string, position: number, force: boolean = false) {
         if (!force && this._unitPath == unitPath && this._position === position) return;
         this._unitPath = unitPath;
-        this._position = position
+        this._position = position;
+        const reconciler = this.reconciler;
+
         try {
 
             // if (isSchema(node))
@@ -179,7 +191,11 @@ export class RamlDetails extends SC.Scrollable {
             //     this.setResource(node);
 
             ramlServer.getNodeClientConnection().getDetails(unitPath, position).then(detailsNode=>{
-                this.setResource(detailsNode);
+                this.setResource(detailsNode, {
+                    uri: unitPath,
+                    position: position,
+                    reconciler
+                });
             })
 
         } catch (e) {}
@@ -187,6 +203,8 @@ export class RamlDetails extends SC.Scrollable {
 
     onDetailsReport(report : ramlServer.IDetailsReport) {
         if (report.uri != this._unitPath) return;
+        const reconciler = this.reconciler;
+
         //if (this._position == report.position) return;
 
         ramlServer.getNodeClientConnection().getLatestVersion(report.uri).then(latestVersion=>{
@@ -194,7 +212,11 @@ export class RamlDetails extends SC.Scrollable {
             //ignoring outdated reports
             if (report.version != null && report.version < latestVersion) return;
 
-            this.setResource(report.details);
+            this.setResource(report.details, {
+                uri: report.uri,
+                position: report.position,
+                reconciler
+            });
         })
     }
 }

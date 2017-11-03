@@ -7,6 +7,9 @@ import SpacePenViews = require('atom-space-pen-views')
 import dialogs=require("../dialogs/dialogs")
 import editorTools=require("./editor-tools")
 import detailElements=require("./detailElements")
+
+export type DetailsContext = detailElements.DetailsContext;
+
 var HTTPANDHTTPS="HTTP, HTTPS"
 var HTTPHTTPS="HTTP/HTTPS"
 import ramlServer = require("raml-language-server");
@@ -42,7 +45,9 @@ var focusedPosition: number = -1;
 var toFocus : UI.TextField = null;
 
 export var oldItem;
-export function updateDetailsPanel(detailsNode: ramlServer.DetailsItemJSON, panel: UI.Panel, updateTextOnDone: boolean = false) {
+export function updateDetailsPanel(detailsReport: ramlServer.DetailsItemJSON,
+                                   context: detailElements.DetailsContext, panel: UI.Panel,
+                                   updateTextOnDone: boolean = false) {
     panel.clear();
     var cfg=(<any>atom).config
     var l=(<any>atom).styles.emitter.handlersByEventName;
@@ -57,7 +62,7 @@ export function updateDetailsPanel(detailsNode: ramlServer.DetailsItemJSON, pane
     try {
         var empty = true;
 
-        var item = detailElements.buildItem(detailsNode, false);
+        var item = detailElements.buildItem(detailsReport, context, false);
         // item.addListener(x=> {
         //     editorTools.aquireManager().updateText(null);
         // })

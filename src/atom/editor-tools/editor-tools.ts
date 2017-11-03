@@ -71,7 +71,7 @@ class EditorManager{
 
     performanceDebug=true;
 
-    private static DETAILS_SUPPORT = false
+    private static DETAILS_SUPPORT = true
 
     getPath(): string {
         console.log("ETM::GetPath");

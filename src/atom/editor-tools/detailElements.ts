@@ -14,6 +14,10 @@ import tooltip=require("../core/tooltip-manager")
 //import contextActions = require("raml-actions")
 import assistUtils = require("../dialogs/assist-utils");
 import ramlServer = require("raml-language-server");
+import {
+    Runnable,
+    Reconciler
+} from "./reconciler"
 
 var lastSelectedCaption:string;
 var inRender:boolean=false;
@@ -22,6 +26,76 @@ interface RenderingOptions{
     showDescription?:boolean;
     showHeader?:boolean;
     collapsible?:boolean;
+}
+
+export interface DetailsContext {
+    uri: string,
+    position: number,
+    reconciler: Reconciler
+}
+
+/**
+ * Runnable that updates details values remotely
+ */
+class UpdateModelRunnable implements Runnable<ramlServer.IChangedDocument[]> {
+
+    private cancelled = false;
+
+    constructor(private context: DetailsContext, private item: ramlServer.DetailsItemJSON,
+                private newValue: string| number| boolean) {
+
+    }
+
+    /**
+     * Performs the actual business logics.
+     * Should resolve the promise when finished.
+     */
+    run(): Promise<ramlServer.IChangedDocument[]> {
+        const connection = ramlServer.getNodeClientConnection();
+
+        return connection.changeDetailValue(this.context.uri, this.context.position,
+                                            this.item.id, this.newValue);
+    }
+
+    /**
+     * Whether two runnable conflict with each other.
+     * Must work fast as its called often.
+     * @param other
+     */
+    conflicts(other: Runnable<any>): boolean {
+        if (isUpdateModelRunnable(other)) {
+            return this.getUri() === other.getUri();
+        }
+
+        return false;
+    }
+
+    /**
+     * Cancels the runnable. run() method should do nothing if launched later,
+     * if cancel is called during the run() method execution, run() should stop as soon as it can.
+     */
+    cancel(): void {
+        this.cancelled = true;
+    }
+
+    /**
+     * Whether cancel() method was called at least once.
+     */
+    isCanceled(): boolean {
+        return this.cancelled;
+    }
+
+    getUri() {
+        return this.context.uri;
+    }
+}
+
+/**
+ * Instanceof for UpdateModelRunnable
+ * @param runnable
+ */
+function isUpdateModelRunnable(runnable: Runnable<any>) : runnable is UpdateModelRunnable {
+    return (runnable as UpdateModelRunnable).getUri != null;
 }
 
 export abstract class Item{
@@ -101,7 +175,7 @@ export abstract class Item{
 
 export class TypeDisplayItem extends Item{
 
-    constructor(private detailsNode:ramlServer.DetailsItemJSON){
+    constructor(private detailsNode:ramlServer.DetailsItemJSON, protected context: DetailsContext){
         super("Type " + detailsNode.title,"");
     }
     render(r:RenderingOptions){
@@ -248,7 +322,8 @@ class TopLevelNode extends Category{
     _panel:UI.Panel;
     _options:RenderingOptions;
 
-    constructor(protected detailsNode:ramlServer.DetailsItemJSON){
+    constructor(protected detailsNode:ramlServer.DetailsItemJSON,
+                protected context: DetailsContext){
         super(detailsNode.title,detailsNode.description);
     }
 
@@ -451,7 +526,8 @@ class CheckBox2 extends UI.CheckBox implements UI.IField<any>{
 }
 class PropertyEditorInfo extends Item{
 
-    constructor(protected outlineNode : ramlServer.DetailsValuedItemJSON){
+    constructor(protected outlineNode : ramlServer.DetailsValuedItemJSON,
+                protected context: DetailsContext){
         super(outlineNode.title,outlineNode.description);
     }
 
@@ -488,78 +564,12 @@ class PropertyEditorInfo extends Item{
     }
 
     fromEditorToModel(newValue? : any, oldValue? : any){
-        // var field=this.fld;
-        //
-        // var vl=this.toLocalValue(field.getBinding().get());
-        //
-        // if (vl==null){
-        //     vl="";
-        // }
-        //
-        // if (vl===true){
-        //     vl="true"
-        // }
-        //
-        // if (vl===false){
-        //     vl="";
-        // }
-        //
-        // var attr=this.node.attr(this.property.nameId());
-        //
-        // var av="";
-        //
-        // if (attr){
-        //     var l = this.toLocalValue(this.toUIValue(attr.value()));
-        //
-        //     if (l){
-        //         av=""+l;
-        //     }
-        // }
-        //
-        // if (av==vl){
-        //     return;
-        // }
-        // if (vl.length>0) {
-        //     if (attr&&attr.lowLevel().includePath()){
-        //         var path=attr.lowLevel().includePath();
-        //         var actualUnit=attr.lowLevel().unit().resolve(path);
-        //         if (actualUnit){
-        //             var apath=actualUnit.absolutePath();
-        //             fs.writeFileSync(apath,vl);
-        //         }
-        //         return;
-        //     }
-        //
-        //     if(this.node.lowLevel().includePath() && !this.node.lowLevel().unit().resolve(this.node.lowLevel().includePath())) {
-        //         return;
-        //     }
-        //
-        //     attr = this.node.attrOrCreate(this.property.nameId());
-        //
-        //     attr.remove();
-        //
-        //     attr = this.node.attrOrCreate(this.property.nameId());
-        //
-        //     attr.setValue("" + vl);
-        //
-        //     delete this.node['_ptype'];
-        // }
-        // else{
-        //     if (attr){
-        //         if (!this.property.getAdapter(def.RAMLPropertyService).isKey()) {
-        //             attr.remove();
-        //         }
-        //     }
-        // }
-        //
-        // if (attr.lowLevel() && attr.lowLevel().unit() && attr.lowLevel().unit() != this.node.lowLevel().unit()) {
-        //     provider.saveUnit(attr.lowLevel().unit());
-        // }
-        //
-        // var root=this.root()
-        // if (root){
-        //     root.update(this);
-        // }
+        const detailsChangeRunnable =
+            new UpdateModelRunnable(this.context, this.outlineNode, newValue);
+
+        this.context.reconciler.schedule(detailsChangeRunnable).then((changedDocuments) => {
+            assistUtils.applyChangedDocuments(changedDocuments);
+        })
     }
 
     toLocalValue(inputValue) {
@@ -814,8 +824,8 @@ class MarkdownField extends PropertyEditorInfo{
 
 }
 class ExampleField extends PropertyEditorInfo{
-    constructor(outlineNode: ramlServer.DetailsValuedItemJSON) {
-        super(outlineNode);
+    constructor(outlineNode: ramlServer.DetailsValuedItemJSON, context: DetailsContext) {
+        super(outlineNode, context);
     }
 
     createField(){
@@ -837,8 +847,8 @@ class ExampleField extends PropertyEditorInfo{
 }
 class XMLExampleField extends PropertyEditorInfo{
 
-    constructor(outlineNode: ramlServer.DetailsValuedItemJSON) {
-        super(outlineNode);
+    constructor(outlineNode: ramlServer.DetailsValuedItemJSON, context: DetailsContext) {
+        super(outlineNode, context);
     }
 
     createField(){
@@ -880,8 +890,8 @@ class JSONSchemaField extends PropertyEditorInfo{
 }
 class SelectBox extends PropertyEditorInfo{
 
-    constructor(protected outlineNode : ramlServer.DetailsItemWithOptionsJSON) {
-        super(outlineNode)
+    constructor(protected outlineNode : ramlServer.DetailsItemWithOptionsJSON, context: DetailsContext) {
+        super(outlineNode, context)
     }
 
     createField(){
@@ -957,7 +967,7 @@ class TypeSelectBox extends SelectBox {
 
 class TreeField extends UI.Panel implements UI.IField<any>{
 
-    constructor(outlineNode : ramlServer.DetailsItemJSON) {
+    constructor(outlineNode : ramlServer.DetailsItemJSON, protected context: DetailsContext) {
         super();
 
         var renderer={
@@ -1014,7 +1024,7 @@ class StructuredField extends PropertyEditorInfo{
         let children = this.outlineNode.children;
         if (!children || children.length != 1) return null;
 
-        var tm= new TreeField(children[0]);
+        var tm= new TreeField(children[0], this.context);
         return tm;
     }
 }
@@ -1025,7 +1035,7 @@ class LowLevelTreeField extends PropertyEditorInfo{
         let children = this.outlineNode.children;
         if (!children || children.length != 1) return null;
 
-        var tm= new TreeField(children[0]);
+        var tm= new TreeField(children[0], this.context);
         return tm;
     }
 }
@@ -1111,8 +1121,11 @@ class LowLevelTreeField extends PropertyEditorInfo{
 //     }
 // }
 
-export function buildItem(detailsNode:ramlServer.DetailsItemJSON,dialog:boolean){
-    let root=new TopLevelNode(detailsNode);
+export function buildItem(detailsNode:ramlServer.DetailsItemJSON,
+                          context: DetailsContext, dialog:boolean){
+
+
+    let root=new TopLevelNode(detailsNode, context);
 
     if(detailsNode.children) {
         for (let child of detailsNode.children) {
@@ -1122,12 +1135,12 @@ export function buildItem(detailsNode:ramlServer.DetailsItemJSON,dialog:boolean)
                 let categoryName = child.title;
                 if (child.children) {
                     for (let childOfChild of child.children) {
-                        buildItemInCategory(childOfChild, root, categoryName);
+                        buildItemInCategory(childOfChild, root, categoryName, context);
                     }
                 }
 
             } else {
-                buildItemInCategory(child, root, null);
+                buildItemInCategory(child, root, null, context);
             }
 
         }
@@ -1137,58 +1150,59 @@ export function buildItem(detailsNode:ramlServer.DetailsItemJSON,dialog:boolean)
 }
 
 function buildItemInCategory(
-    detailsNode: ramlServer.DetailsItemJSON, root: TopLevelNode, categoryName:string) {
+    detailsNode: ramlServer.DetailsItemJSON, root: TopLevelNode, categoryName:string,
+    context: DetailsContext) {
 
     let item = null;
 
     if(detailsNode.type == "CHECKBOX"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new CheckBoxField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new CheckBoxField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "JSONSCHEMA"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new JSONSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new JSONSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "XMLSCHEMA"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new XMLSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new XMLSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "MARKDOWN"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new MarkdownField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new MarkdownField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "SELECTBOX"
         && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).options !== null) {
-        item = new SelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode);
+        item = new SelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode, context);
     }
     else if(detailsNode.type == "MULTIEDITOR"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new SimpleMultiEditor(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new SimpleMultiEditor(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "TREE") {
-        item = new TreeField(detailsNode);
+        item = new TreeField(detailsNode, context);
     }
     else if(detailsNode.type == "STRUCTURED") {
-        item = new StructuredField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new StructuredField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "TYPEDISPLAY") {
-        item = new TypeDisplayItem(detailsNode);
+        item = new TypeDisplayItem(detailsNode, context);
     }
     else if(detailsNode.type == "TYPESELECT"
         && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).valueText !== null) {
-        item = new TypeSelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode);
+        item = new TypeSelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode, context);
     }
     else if(detailsNode.type == "JSONEXAMPLE"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new ExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new ExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "XMLEXAMPLE"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new XMLExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new XMLExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "ATTRIBUTETEXT"
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
-        item = new PropertyEditorInfo(<ramlServer.DetailsValuedItemJSON>detailsNode);
+        item = new PropertyEditorInfo(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
 
     if (item != null) {

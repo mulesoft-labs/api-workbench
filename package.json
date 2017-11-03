@@ -68,7 +68,8 @@
     "xmlhttprequest": "^1.7.0",
     "xtend": "^4.0.1",
     "shortid": "^2.2.6",
-    "raml-language-server" : "0.0.4"
+    "raml-language-server" : "0.0.4",
+    "promise-polyfill": "6.0.2"
   },
   "devDependencies": {
     "@types/es6-promise": "*",
