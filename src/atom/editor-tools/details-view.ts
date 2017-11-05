@@ -29,7 +29,7 @@ export class RamlDetails extends SC.Scrollable {
         const connection = ramlServer.getNodeClientConnection();
         connection.onDetailsReport(report=>this.onDetailsReport(report))
 
-        this.reconciler = new Reconciler(connection, 300);
+        this.reconciler = new Reconciler(connection, 800);
     }
 
     getTitle() {

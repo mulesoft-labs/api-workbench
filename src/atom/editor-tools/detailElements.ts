@@ -116,7 +116,9 @@ export abstract class Item{
 
     detach(){
         this.dispose();
-        this.children().forEach(x=>x.detach());
+        this.children().forEach(x=>{
+            if (x.detach)x.detach();
+        });
     }
 
     addListener(r:(i:Item)=>void){
@@ -993,9 +995,7 @@ class TreeField extends UI.Panel implements UI.IField<any>{
         var viewer=UI.treeViewer(getChildren, renderer, x => x.title);
 
         var inputValue={
-            children(){
-                return [outlineNode];
-            }
+            children:[outlineNode]
         }
 
         viewer.setInput(<any>inputValue);
@@ -1155,8 +1155,7 @@ function buildItemInCategory(
 
     let item = null;
 
-    if(detailsNode.type == "CHECKBOX"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
+    if(detailsNode.type == "CHECKBOX") {
         item = new CheckBoxField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "JSONSCHEMA"
@@ -1167,20 +1166,18 @@ function buildItemInCategory(
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new XMLSchemaField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
-    else if(detailsNode.type == "MARKDOWN"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
+    else if(detailsNode.type == "MARKDOWN") {
         item = new MarkdownField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "SELECTBOX"
         && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).options !== null) {
         item = new SelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode, context);
     }
-    else if(detailsNode.type == "MULTIEDITOR"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
+    else if(detailsNode.type == "MULTIEDITOR") {
         item = new SimpleMultiEditor(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "TREE") {
-        item = new TreeField(detailsNode, context);
+        item = new LowLevelTreeField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
     else if(detailsNode.type == "STRUCTURED") {
         item = new StructuredField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
@@ -1188,8 +1185,7 @@ function buildItemInCategory(
     else if(detailsNode.type == "TYPEDISPLAY") {
         item = new TypeDisplayItem(detailsNode, context);
     }
-    else if(detailsNode.type == "TYPESELECT"
-        && (<ramlServer.DetailsItemWithOptionsJSON>detailsNode).valueText !== null) {
+    else if(detailsNode.type == "TYPESELECT") {
         item = new TypeSelectBox(<ramlServer.DetailsItemWithOptionsJSON>detailsNode, context);
     }
     else if(detailsNode.type == "JSONEXAMPLE"
@@ -1200,8 +1196,7 @@ function buildItemInCategory(
         && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
         item = new XMLExampleField(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
-    else if(detailsNode.type == "ATTRIBUTETEXT"
-        && (<ramlServer.DetailsValuedItemJSON>detailsNode).valueText !== null) {
+    else if(detailsNode.type == "ATTRIBUTETEXT") {
         item = new PropertyEditorInfo(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
 

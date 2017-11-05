@@ -284,13 +284,13 @@ export function createTree(structure:{[categoryName: string]: ramlServer.Structu
 
     var folder = new UI.TabFolder();
 
-    folder.add(ramlServer.StructureCategories[ramlServer.StructureCategories.ResourcesCategory],
+    folder.add("Resources",
         UI.Icon.SEARCH, outline, 'raml-icon-custom');
-    folder.add(ramlServer.StructureCategories[ramlServer.StructureCategories.SchemasAndTypesCategory],
+    folder.add("Schemas&Types",
         UI.Icon.SEARCH, schemas, 'raml-icon-custom');
-    folder.add(ramlServer.StructureCategories[ramlServer.StructureCategories.ResourceTypesAndTraitsCategory],
+    folder.add("ResourceTypes&Traits",
         UI.Icon.SEARCH, types, 'raml-icon-custom');
-    folder.add(ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory],
+    folder.add("Other",
         UI.Icon.SEARCH, other, 'raml-icon-custom');
 
     folder.setSelectedIndex(0)
