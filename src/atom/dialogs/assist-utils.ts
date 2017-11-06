@@ -429,6 +429,22 @@ export function getActiveEditor() : AtomCore.IEditor {
     return null
 }
 
+/**
+ * Sets active editor cursor at the position (starting from 0).
+ * @param position
+ */
+export function gotoPosition(position: number): void {
+    let activeEditor = getActiveEditor();
+    if (!activeEditor) {
+        return;
+    }
+
+    let bufferPos = activeEditor.getBuffer().positionForCharacterIndex(position);
+
+    activeEditor.setSelectedBufferRange({start: bufferPos, end: bufferPos}, {});
+}
+
+
 export function gotoDeclaration(){
     var editor=getActiveEditor();
     if (!editor) return;

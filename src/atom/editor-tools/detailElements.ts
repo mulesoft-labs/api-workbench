@@ -569,8 +569,11 @@ class PropertyEditorInfo extends Item{
         const detailsChangeRunnable =
             new UpdateModelRunnable(this.context, this.outlineNode, newValue);
 
-        this.context.reconciler.schedule(detailsChangeRunnable).then((changedDocuments) => {
+        const context = this.context;
+
+        context.reconciler.schedule(detailsChangeRunnable).then((changedDocuments) => {
             assistUtils.applyChangedDocuments(changedDocuments);
+            assistUtils.gotoPosition(context.position);
         })
     }
 
@@ -627,32 +630,32 @@ class PropertyEditorInfo extends Item{
 }
 
 class SimpleMultiEditor extends PropertyEditorInfo{
-    fromEditorToModel(){
-        // var field=this.fld;
-        // var vl=field.getBinding().get();
-        // if (vl==null){
-        //     vl="";
-        // }
-        // var attrs=this.node.attributes(this.property.nameId());
-        // var av=attrs.map(x=>escapeValue(""+x.value())).join(", ");
-        // if (av==vl){
-        //     return;
-        // }
-        // var ww=vl.split(",");
-        // var vl=ww.filter(x=>x.trim().length>0).map(x=>x.trim());
-        //
-        // if(this.node.lowLevel().includePath() && !this.node.lowLevel().unit().resolve(this.node.lowLevel().includePath())) {
-        //     return;
-        // }
-        //
-        // var attribute = this.node.attrOrCreate(this.property.nameId());
-        // attribute.setValues(vl)
-        //
-        // var root=this.root()
-        // if (root){
-        //     root.update(this);
-        // }
-    }
+    // fromEditorToModel(){
+    //     // var field=this.fld;
+    //     // var vl=field.getBinding().get();
+    //     // if (vl==null){
+    //     //     vl="";
+    //     // }
+    //     // var attrs=this.node.attributes(this.property.nameId());
+    //     // var av=attrs.map(x=>escapeValue(""+x.value())).join(", ");
+    //     // if (av==vl){
+    //     //     return;
+    //     // }
+    //     // var ww=vl.split(",");
+    //     // var vl=ww.filter(x=>x.trim().length>0).map(x=>x.trim());
+    //     //
+    //     // if(this.node.lowLevel().includePath() && !this.node.lowLevel().unit().resolve(this.node.lowLevel().includePath())) {
+    //     //     return;
+    //     // }
+    //     //
+    //     // var attribute = this.node.attrOrCreate(this.property.nameId());
+    //     // attribute.setValues(vl)
+    //     //
+    //     // var root=this.root()
+    //     // if (root){
+    //     //     root.update(this);
+    //     // }
+    // }
     fromModelToEditor(){
         this.fld.getBinding().set(this.outlineNode.valueText);
     }

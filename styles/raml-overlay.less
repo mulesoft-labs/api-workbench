@@ -75,6 +75,78 @@ li:hover span.outline > a {
   background: none !important;
 }
 
+.api-workbench-checkbox-container {
+    padding-left: 1em;
+}
+
+.api-workbench-checkbox {
+  -webkit-appearance: none;
+  display: inline-block;
+  position: relative;
+  font-size: inherit;
+  margin: 0 .75em 0 -2.25em;
+  vertical-align: top;
+  width: 1.5em;
+  height: 1.5em;
+  cursor: pointer;
+  outline: 0;
+  border-radius: @component-border-radius;
+  background-color: @text-color-subtle;
+  transition: background-color .16s cubic-bezier(0.5, 0.15, 0.2, 1);
+
+  &:focus {
+    box-shadow: none !important;
+  }
+
+  &:active {
+    background-color: transparent !important;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 1.1em;
+    left: .6em;
+    height: .16em;
+    min-height: 2px;
+    border-radius: 1px;
+    background-color: @base-background-color;
+    transform-origin: 0% 0%;
+    opacity: 0;
+    transition: transform .1s cubic-bezier(0.5, 0.15, 0.2, 1), opacity .1s cubic-bezier(0.5, 0.15, 0.2, 1);
+  }
+  &::before {
+    width: .45em;
+    transform: rotate(225deg) scale(0);
+  }
+  &::after {
+    width: .9em;
+    margin: -1px;
+    transform: rotate(-45deg) scale(0);
+    transition-delay: .05s;
+  }
+
+  &:checked {
+    background-color: @background-color-success;
+    &:active {
+      background-color: transparent !important;
+    }
+    &::before,
+    &::after {
+      opacity: 1;
+    }
+    &::before {
+      transform: rotate(225deg) scale(1);
+      transition-delay: .05s;
+    }
+    &::after {
+      transform: rotate(-45deg) scale(1);
+      transition-delay: 0;
+    }
+  }
+}
+
 .text-field {
     width: auto !important;
 }
@@ -102,8 +174,12 @@ li:hover span.outline > a {
    margin-top: 4px;
  }
 
-.raml-occurence .region {
-  background-color: rgba(128, 128, 128, 0.1) !important;
-  color: white !important;
-  font-style: italic !important;
-}
+ .raml-occurence .region {
+   background-color: rgba(255, 255, 255, 0.3) !important;
+   color: white !important;
+   font-style: italic !important;
+ }
+
+ .theme-one-dark-ui .syntax--raml .syntax--comment {
+   color: #7c9390 !important;
+ }
