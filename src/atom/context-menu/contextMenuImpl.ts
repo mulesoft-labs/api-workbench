@@ -6,6 +6,8 @@ import editorTools = require("../editor-tools/editor-tools")
 
 import uilibsModule = require("atom-ui-lib")
 
+import nodeEval = require("node-eval")
+
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 
 /**
@@ -219,9 +221,9 @@ export function initializeActionBasedMenu(selector? : string) {
                 var result : contextMenu.IContextMenuItem[] = []
 
                 currentActions.forEach(action => {
-                    if (action.hasUI) {
-                        return;
-                    }
+                    // if (action.hasUI) {
+                    //     return;
+                    // }
 
                     result.push({
 
@@ -255,13 +257,24 @@ export function initializeActionBasedMenu(selector? : string) {
 
 function handleActionUI() {
     ramlServer.getNodeClientConnection().onDisplayActionUI(uiDisplayRequest => {
+        ramlServer.getNodeClientConnection().debug("Got UI display request",
+            "contextActions", "contextMenuImpl#handleActionUI")
+
         let code = uiDisplayRequest.uiCode;
 
         var IDE = atom;
         var UI = uilibsModule;
 
-        let evalResult : any = eval(code);
+
+        let evalResult : any = nodeEval(code, "/Users/munch/work/ParserTest/test.js", {
+            IDE: atom,
+            UI: uilibsModule
+        });
         let result = evalResult.result;
+
+        ramlServer.getNodeClientConnection().debug("Finished evaluation, result is: " +
+            JSON.stringify(result),
+            "contextActions", "contextMenuImpl#handleActionUI")
 
         return Promise.resolve(result);
     })
@@ -270,7 +283,7 @@ function handleActionUI() {
 function configureServerActions() {
     ramlServer.getNodeClientConnection().setServerConfiguration({
         actionsConfiguration: {
-            enableUIActions: false
+            enableUIActions: true
         }
     });
 }
