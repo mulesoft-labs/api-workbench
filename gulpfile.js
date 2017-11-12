@@ -136,8 +136,12 @@ gulp.task('typescript:prepare-compile', [], function () {
       .pipe(gulp.dest('src/raml1/tools/'));
 });
 
-gulp.task('typescript:compile', [
+gulp.task('syncActionsUI', [], function (done) {
+    return spawn('node', [join(__dirname, 'src/util/actionUIUpdater.js')], done);
+});
 
+gulp.task('typescript:compile', [
+    'syncActionsUI'
 ], function () {
   var hasError = false;
   var tsResult = gulp.src(['**/*.ts', '!java/**', '!node_modules/**', '!examples/**', '!atom-package/**', '!custom_typings/**', '!typings/**'])

@@ -5,8 +5,10 @@ import contextMenu = require("./contextMenuInterfaces")
 import editorTools = require("../editor-tools/editor-tools")
 
 import uilibsModule = require("atom-ui-lib")
-
-import nodeEval = require("node-eval")
+import fs = require("fs")
+import mkdirp = require("mkdirp")
+import pathModule = require("path")
+import actionUIManager = require("./actionUIManager")
 
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 
@@ -190,6 +192,19 @@ function onClickHandler(path, action, position) {
                     uri: path,
                     text: change.text
                 })
+            } else if (change.text != null) {
+                let editorFound = false;
+                atom.workspace.getTextEditors().forEach((currentEditor) => {
+                    if (currentEditor.getPath && currentEditor.getPath() == change.uri) {
+                        currentEditor.getBuffer().setText(change.text);
+                        editorFound = true;
+                    }
+                })
+
+                if (!editorFound) {
+                    mkdirp.sync(pathModule.dirname(change.uri));
+                    fs.writeFileSync(change.uri, change.text)
+                }
             }
         }
     })
@@ -260,23 +275,25 @@ function handleActionUI() {
         ramlServer.getNodeClientConnection().debug("Got UI display request",
             "contextActions", "contextMenuImpl#handleActionUI")
 
-        let code = uiDisplayRequest.uiCode;
+        const actionUI = actionUIManager.getUICode(uiDisplayRequest.action.id);
+        if (!actionUI) {
+            ramlServer.getNodeClientConnection().error("Can not find UI for action " +
+                uiDisplayRequest.action.id,
+                "contextActions", "handleActionUI")
 
-        var IDE = atom;
-        var UI = uilibsModule;
+            return Promise.resolve({});
+        }
 
+        (global as any).IDE = atom;
+        (global as any).UI = uilibsModule;
 
-        let evalResult : any = nodeEval(code, "/Users/munch/work/ParserTest/test.js", {
-            IDE: atom,
-            UI: uilibsModule
+        return actionUI.run().then((result) => {
+
+            ramlServer.getNodeClientConnection().debugDetail("Client: got result on dialog finish",
+                "contextActions", "handleActionUI")
+
+            return result;
         });
-        let result = evalResult.result;
-
-        ramlServer.getNodeClientConnection().debug("Finished evaluation, result is: " +
-            JSON.stringify(result),
-            "contextActions", "contextMenuImpl#handleActionUI")
-
-        return Promise.resolve(result);
     })
 }
 
