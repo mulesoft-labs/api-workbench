@@ -194,6 +194,7 @@ export class RamlDetails extends SC.Scrollable {
                 this.setResource(detailsNode, {
                     uri: unitPath,
                     position: position,
+                    localModel: false,
                     reconciler
                 });
             })
@@ -215,7 +216,8 @@ export class RamlDetails extends SC.Scrollable {
             this.setResource(report.details, {
                 uri: report.uri,
                 position: report.position,
-                reconciler
+                localModel: false,
+                reconciler,
             });
         })
     }

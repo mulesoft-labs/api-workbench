@@ -9,6 +9,7 @@ import fs = require("fs")
 import mkdirp = require("mkdirp")
 import pathModule = require("path")
 import actionUIManager = require("./actionUIManager")
+import uiBuilder = require("../editor-tools/detailElements")
 
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 
@@ -286,8 +287,9 @@ function handleActionUI() {
 
         (global as any).IDE = atom;
         (global as any).UI = uilibsModule;
+        (global as any).UIBuilder = uiBuilder;
 
-        return actionUI.run().then((result) => {
+        return actionUI.run(uiDisplayRequest.initialUIState).then((result) => {
 
             ramlServer.getNodeClientConnection().debugDetail("Client: got result on dialog finish",
                 "contextActions", "handleActionUI")

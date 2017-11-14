@@ -31,7 +31,8 @@ interface RenderingOptions{
 export interface DetailsContext {
     uri: string,
     position: number,
-    reconciler: Reconciler
+    reconciler: Reconciler,
+    localModel: any
 }
 
 /**
@@ -51,6 +52,12 @@ class UpdateModelRunnable implements Runnable<ramlServer.IChangedDocument[]> {
      * Should resolve the promise when finished.
      */
     run(): Promise<ramlServer.IChangedDocument[]> {
+        if(this.context.localModel) {
+            this.context.localModel[this.item.id] = this.newValue;
+            
+            return Promise.resolve();
+        }
+        
         const connection = ramlServer.getNodeClientConnection();
 
         return connection.changeDetailValue(this.context.uri, this.context.position,
@@ -572,6 +579,10 @@ class PropertyEditorInfo extends Item{
         const context = this.context;
 
         context.reconciler.schedule(detailsChangeRunnable).then((changedDocuments) => {
+            if(context.localModel) {
+                return
+            }
+            
             assistUtils.applyChangedDocuments(changedDocuments);
             assistUtils.gotoPosition(context.position);
         })
