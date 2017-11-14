@@ -12,16 +12,16 @@
     "gitUrl" : "https://github.com/raml-org/raml-language-server.git",
     "gitBranch" : "develop"
   },
-  "raml-outline" : {
-    "build" : "npm run build",
-    "gitUrl" : "https://github.com/mulesoft-labs/raml-outline.git",
-    "gitBranch" : "develop"
-  },
   "raml-actions" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/raml-actions.git",
     "gitBranch" : "develop",
     "installTypings" : true
+  },
+  "raml-outline" : {
+    "build" : "npm run build",
+    "gitUrl" : "https://github.com/mulesoft-labs/raml-outline.git",
+    "gitBranch" : "develop"
   },
   "raml-suggestions" : {
     "build" : "npm run build",
