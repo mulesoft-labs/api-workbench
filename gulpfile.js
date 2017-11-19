@@ -340,7 +340,7 @@ gulp.task('package-clean', function () {
 });
 
 gulp.task('pre-package-publish', ['package-clean'], function (done) {
-  childProcess.exec('mkdir atom-package && cd atom-package && git clone https://github.com/'+API_WORKBENCH_PACKAGE_ORG+'/'+API_WORKBENCH_PACKAGE_REPO+'.git --branch bin --single-branch . && find . ! -name ".git" ! -name "." ! -name ".." -maxdepth 1 -exec rm -rf {} +', done);
+  childProcess.exec('mkdir atom-package && cd atom-package && git clone https://github.com/'+API_WORKBENCH_PACKAGE_ORG+'/'+API_WORKBENCH_PACKAGE_REPO+'.git --branch raml-server-bin --single-branch . && find . ! -name ".git" ! -name "." ! -name ".." -maxdepth 1 -exec rm -rf {} +', done);
 });
 
 gulp.task('package-deps', ['package-readme', 'package-build', 'package-copy', 'package-assets', 'package-json']);
