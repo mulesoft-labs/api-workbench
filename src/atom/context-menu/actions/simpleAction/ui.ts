@@ -36,7 +36,9 @@ export function run(initialState): Promise<any> {
 
             return true;
         }, () => {
-            resolve({});
+            resolve({
+                canceled: true
+            });
 
             return true;
         });
