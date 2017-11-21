@@ -91,7 +91,7 @@
     "source-map-loader": "^0.1.5",
     "string-replace-webpack-plugin": "0.0.2",
     "typings": "^0.6.8",
-    "webpack": "1.4.2",
+    "webpack": "1.15.0",
     "node-libs-browser": "^0.5.2",
     "typescript": "2.5.2",
     "dev-env-installer":"0.0.6",
