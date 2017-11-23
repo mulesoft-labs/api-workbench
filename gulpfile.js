@@ -350,7 +350,7 @@ gulp.task('pre-publish-and-package-deps', function(callback) {
 });
 
 gulp.task('package-publish', ['pre-publish-and-package-deps'], function (done) {
-  childProcess.exec('VERSION=`node -p "require(\'./package.json\').version"` && cd atom-package && git add -A && git commit -m "Prepare v$VERSION" && git tag -a "v$VERSION" -m "v$VERSION" && git push && git push --tags', done);
+  childProcess.exec('VERSION=`node -p "require(\'./package.json\').version"` && cd atom-package && git add -A && git commit -m "Prepare v$VERSION" && git push', done);
 });
 
 /**
