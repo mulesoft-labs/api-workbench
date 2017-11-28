@@ -137,7 +137,13 @@ gulp.task('typescript:prepare-compile', [], function () {
 });
 
 gulp.task('syncActionsUI', [], function (done) {
-    return spawn('node', [join(__dirname, 'src/util/actionUIUpdater.js')], done);
+    var updaterPath = join(__dirname, 'src/util/actionUIUpdater.js');
+    if (!fs.existsSync(updaterPath)) {
+      console.log("No action updater found, skipping...")
+      done();
+      return;
+    }
+    return spawn('node', [updaterPath], done);
 });
 
 gulp.task('typescript:compile', [
