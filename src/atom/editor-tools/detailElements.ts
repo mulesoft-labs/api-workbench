@@ -18,6 +18,7 @@ import {
     Runnable,
     Reconciler
 } from "./reconciler"
+import {applyChangedDocuments} from "../dialogs/assist-utils";
 
 var lastSelectedCaption:string;
 var inRender:boolean=false;
@@ -1054,6 +1055,81 @@ class LowLevelTreeField extends PropertyEditorInfo{
     }
 }
 
+class ActionsItem extends Item {
+
+    private nodes: ramlServer.DetailsActionItemJSON[] = [];
+
+    constructor(protected context: DetailsContext){
+        super("Actions","");
+    }
+
+    addNode(node: ramlServer.DetailsActionItemJSON) {
+        this.nodes.push(node);
+    }
+
+    render(r:RenderingOptions){
+
+        var result=UI.vc();
+        var hc=UI.hc();
+        result.addChild(UI.h3("Insertions and Delete: "));
+        result.addChild(hc)
+
+        this.nodes.forEach((node) => {
+            if (node.subType == "INSERT") {
+                hc.addChild(UI.button(
+                    node.title,UI.ButtonSizes.EXTRA_SMALL,UI.ButtonHighlights.INFO,UI.Icon.NONE,x=>{
+                        this.run(node.id)
+                    }
+                ).margin(3,3,3,3));
+            }
+        })
+
+        this.nodes.forEach((node) => {
+            if (node.subType == "INSERT_VALUE") {
+                hc.addChild(UI.button(
+                    node.title,UI.ButtonSizes.EXTRA_SMALL,UI.ButtonHighlights.WARNING,UI.Icon.NONE,x=>{
+                        this.run(node.id)
+                    }
+                ).margin(3,3,3,3));
+            }
+        })
+
+        this.nodes.forEach((node) => {
+            if (node.subType == "DELETE") {
+                hc.addChild(UI.button(
+                    node.title,UI.ButtonSizes.EXTRA_SMALL,UI.ButtonHighlights.ERROR,UI.Icon.NONE,x=>{
+                        this.run(node.id)
+                    }
+                ).margin(3,3,3,3));
+            }
+        })
+
+        return result;
+    }
+
+    private run(actionID: string) {
+        const connection = ramlServer.getNodeClientConnection();
+
+        connection.executeDetailsAction(this.context.uri, actionID, this.context.position
+                ).then((changedDocuments => {
+                applyChangedDocuments(changedDocuments);
+        }))
+    }
+
+    dispose(){
+
+    }
+}
+
+/**
+ * Instanceof check for ActionsItem.
+ * @param item
+ * @return {boolean}
+ */
+function isInstanceOfActionsItem(item: Item) : item is ActionsItem {
+    return (item as ActionsItem).addNode != null;
+}
+
 // function category(p:hl.IProperty,node:hl.IHighLevelNode):string{
 //     if (p.getAdapter(def.RAMLPropertyService).isKey()||p.isRequired()){
 //         return null;
@@ -1213,10 +1289,31 @@ function buildItemInCategory(
     else if(detailsNode.type == "ATTRIBUTETEXT") {
         item = new PropertyEditorInfo(<ramlServer.DetailsValuedItemJSON>detailsNode, context);
     }
+    else if(detailsNode.type == "DETAILS_ACTION") {
+
+        const actionItem = findOrCreateActionItemInCategory(root, categoryName, context);
+
+        actionItem.addNode(detailsNode as ramlServer.DetailsActionItemJSON);
+    }
 
     if (item != null) {
         root.addItemToCategory(categoryName, item);
     } else {
         console.log("Can not recognize element " + detailsNode.type);
     }
+}
+
+function findOrCreateActionItemInCategory(root: TopLevelNode, categoryName: string,
+                                          context: DetailsContext) : ActionsItem {
+    const category = root.subCategoryByNameOrCreate(categoryName);
+    for (const child of category.children()) {
+        if (isInstanceOfActionsItem(child)) {
+            return child;
+        }
+    }
+
+    const actionsItem = new ActionsItem(context);
+    category.children().unshift(actionsItem);
+
+    return actionsItem;
 }
