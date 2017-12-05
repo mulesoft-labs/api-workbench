@@ -1130,6 +1130,59 @@ function isInstanceOfActionsItem(item: Item) : item is ActionsItem {
     return (item as ActionsItem).addNode != null;
 }
 
+class CustomActionsItem extends Item {
+
+    private nodes: ramlServer.DetailsActionItemJSON[] = [];
+
+    constructor(protected context: DetailsContext){
+        super("Actions","");
+    }
+
+    addAction(node: ramlServer.DetailsActionItemJSON) {
+        this.nodes.push(node);
+    }
+
+    render(r:RenderingOptions){
+
+        var result=UI.vc();
+        var hc=UI.hc();
+        result.addChild(UI.h3("Custom Actions: "));
+        result.addChild(hc)
+
+        this.nodes.forEach((node) => {
+            hc.addChild(UI.button(
+                node.title,UI.ButtonSizes.EXTRA_SMALL,UI.ButtonHighlights.INFO,UI.Icon.NONE,x=>{
+                    this.run(node.id)
+                }
+            ).margin(3,3,3,3));
+        })
+
+        return result;
+    }
+
+    private run(actionID: string) {
+        // const connection = ramlServer.getNodeClientConnection();
+        //
+        // connection.executeDetailsAction(this.context.uri, actionID, this.context.position
+        // ).then((changedDocuments => {
+        //     applyChangedDocuments(changedDocuments);
+        // }))
+    }
+
+    dispose(){
+
+    }
+}
+
+/**
+ * Instanceof check for ActionsItem.
+ * @param item
+ * @return {boolean}
+ */
+function isInstanceOfCustomActionsItem(item: Item) : item is CustomActionsItem {
+    return (item as CustomActionsItem).addAction != null;
+}
+
 // function category(p:hl.IProperty,node:hl.IHighLevelNode):string{
 //     if (p.getAdapter(def.RAMLPropertyService).isKey()||p.isRequired()){
 //         return null;
@@ -1291,9 +1344,15 @@ function buildItemInCategory(
     }
     else if(detailsNode.type == "DETAILS_ACTION") {
 
-        const actionItem = findOrCreateActionItemInCategory(root, categoryName, context);
+        if ((detailsNode as ramlServer.DetailsActionItemJSON).subType != "CUSTOM_ACTION") {
+            const actionItem = findOrCreateActionItemInCategory(root, categoryName, context);
 
-        actionItem.addNode(detailsNode as ramlServer.DetailsActionItemJSON);
+            actionItem.addNode(detailsNode as ramlServer.DetailsActionItemJSON);
+        } else {
+            const customActionItem = findOrCreateCustomActionItemInCategory(root, categoryName, context);
+
+            customActionItem.addAction(detailsNode as ramlServer.DetailsActionItemJSON);
+        }
     }
 
     if (item != null) {
@@ -1313,6 +1372,21 @@ function findOrCreateActionItemInCategory(root: TopLevelNode, categoryName: stri
     }
 
     const actionsItem = new ActionsItem(context);
+    category.children().unshift(actionsItem);
+
+    return actionsItem;
+}
+
+function findOrCreateCustomActionItemInCategory(root: TopLevelNode, categoryName: string,
+                                          context: DetailsContext) : CustomActionsItem {
+    const category = root.subCategoryByNameOrCreate(categoryName);
+    for (const child of category.children()) {
+        if (isInstanceOfCustomActionsItem(child)) {
+            return child;
+        }
+    }
+
+    const actionsItem = new CustomActionsItem(context);
     category.children().unshift(actionsItem);
 
     return actionsItem;
