@@ -10,6 +10,7 @@ import mkdirp = require("mkdirp")
 import pathModule = require("path")
 import actionUIManager = require("./actionUIManager")
 import uiBuilder = require("../editor-tools/detailElements")
+import {IExecutableAction} from "raml-language-server/dist/common/typeInterfaces";
 
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 
@@ -171,11 +172,17 @@ function addItemsTreeNode(roots : ContextMenuItemNode[], item : contextMenu.ICon
 
 var actionBasedMenuInitialized = false;
 
-function onClickHandler(path, action, position) {
 
-    ramlServer.getNodeClientConnection().executeContextAction(
+export function launchServerAction(path: string, action: IExecutableAction, position: number): void {
+
+    launchServerActionByID(path, action.id, position);
+}
+
+export function launchServerActionByID(path: string, actionID: string, position: number): void {
+
+    ramlServer.getNodeClientConnection().executeContextActionByID(
         path,
-        action,
+        actionID,
         position
     ).then(changes=>{
         let editorManager = editorTools.aquireManager();
@@ -250,7 +257,7 @@ export function initializeActionBasedMenu(selector? : string) {
                         categories : action.category,
 
                         onClick: ()=>{
-                            onClickHandler(path, action, position)
+                            launchServerAction(path, action, position)
                         },
 
                         children: []

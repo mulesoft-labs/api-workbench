@@ -19,6 +19,9 @@ import {
     Reconciler
 } from "./reconciler"
 import {applyChangedDocuments} from "../dialogs/assist-utils";
+import {
+    launchServerActionByID
+} from "../context-menu/contextMenuImpl"
 
 var lastSelectedCaption:string;
 var inRender:boolean=false;
@@ -1161,12 +1164,7 @@ class CustomActionsItem extends Item {
     }
 
     private run(actionID: string) {
-        // const connection = ramlServer.getNodeClientConnection();
-        //
-        // connection.executeDetailsAction(this.context.uri, actionID, this.context.position
-        // ).then((changedDocuments => {
-        //     applyChangedDocuments(changedDocuments);
-        // }))
+        launchServerActionByID(this.context.uri, actionID, this.context.position);
     }
 
     dispose(){
