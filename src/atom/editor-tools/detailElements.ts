@@ -1383,6 +1383,18 @@ function findOrCreateActionItemInCategory(root: TopLevelNode, categoryName: stri
     return actionsItem;
 }
 
+function findActionItemInCategory(root: TopLevelNode, categoryName: string,
+                                  context: DetailsContext) {
+    const category = root.subCategoryByNameOrCreate(categoryName);
+    for (const child of category.children()) {
+        if (isInstanceOfActionsItem(child)) {
+            return child;
+        }
+    }
+
+    return null;
+}
+
 function findOrCreateCustomActionItemInCategory(root: TopLevelNode, categoryName: string,
                                           context: DetailsContext) : CustomActionsItem {
     const category = root.subCategoryByNameOrCreate(categoryName);
@@ -1392,8 +1404,15 @@ function findOrCreateCustomActionItemInCategory(root: TopLevelNode, categoryName
         }
     }
 
-    const actionsItem = new CustomActionsItem(context);
-    category.children().unshift(actionsItem);
+    const customActionsItem = new CustomActionsItem(context);
 
-    return actionsItem;
+    const inserterActionsItem = findActionItemInCategory(root, categoryName, context);
+
+    if (inserterActionsItem) {
+        category.children().splice(1, 0, customActionsItem);
+    } else {
+        category.children().unshift(customActionsItem);
+    }
+
+    return customActionsItem;
 }
