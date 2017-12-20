@@ -264,6 +264,11 @@ export function initializeActionBasedMenu(selector? : string) {
                     })
                 })
 
+                let updatedPosition = editorManager.getCurrentPosition();
+                if (updatedPosition !== position) {
+                    return [];
+                }
+
                 return result
             })
         }
