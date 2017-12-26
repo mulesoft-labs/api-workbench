@@ -58,14 +58,14 @@ class UpdateModelRunnable implements Runnable<ramlServer.IChangedDocument[]> {
     run(): Promise<ramlServer.IChangedDocument[]> {
         if(this.context.localModel) {
             this.context.localModel[this.item.id] = this.newValue;
-            
+
             return Promise.resolve();
         }
-        
+
         const connection = ramlServer.getNodeClientConnection();
 
         return connection.changeDetailValue(this.context.uri, this.context.position,
-                                            this.item.id, this.newValue);
+            this.item.id, this.newValue);
     }
 
     /**
@@ -546,6 +546,11 @@ class PropertyEditorInfo extends Item{
 
     dispose(){
         this.outlineNode=null;
+
+        if(!this.fld) {
+            return;
+        }
+
         this.fld.getBinding().removeListener(this.update)
     }
 
@@ -586,7 +591,7 @@ class PropertyEditorInfo extends Item{
             if(context.localModel) {
                 return
             }
-            
+
             assistUtils.applyChangedDocuments(changedDocuments);
             assistUtils.gotoPosition(context.position);
         })
@@ -601,8 +606,9 @@ class PropertyEditorInfo extends Item{
     }
 
     fromModelToEditor() {
-
-        this.fld.getBinding().set(this.outlineNode.valueText);
+        if(this.fld) {
+            this.fld.getBinding().set(this.outlineNode.valueText);
+        }
     }
     rendered:boolean=false
     update=(newValue, oldValue)=>{
@@ -624,13 +630,17 @@ class PropertyEditorInfo extends Item{
 
         this.fld=<UI.BasicComponent<any>>field;
 
-        field.getBinding().addListener(this.update)
+        if(field) {
+            field.getBinding().addListener(this.update);
+        }
 
         container.setCaption(this.title());
 
         this.fromModelToEditor();
 
-        container.addChild(field);
+        if(field) {
+            container.addChild(field);
+        }
 
         container.addChild(this.errorLabel);
 
@@ -671,7 +681,11 @@ class SimpleMultiEditor extends PropertyEditorInfo{
     //     //     root.update(this);
     //     // }
     // }
-    fromModelToEditor(){
+    fromModelToEditor() {
+        if(!this.fld) {
+            return;
+        }
+
         this.fld.getBinding().set(this.outlineNode.valueText);
     }
 }
@@ -1114,8 +1128,8 @@ class ActionsItem extends Item {
         const connection = ramlServer.getNodeClientConnection();
 
         connection.executeDetailsAction(this.context.uri, actionID, this.context.position
-                ).then((changedDocuments => {
-                applyChangedDocuments(changedDocuments);
+        ).then((changedDocuments => {
+            applyChangedDocuments(changedDocuments);
         }))
     }
 
@@ -1396,7 +1410,7 @@ function findActionItemInCategory(root: TopLevelNode, categoryName: string,
 }
 
 function findOrCreateCustomActionItemInCategory(root: TopLevelNode, categoryName: string,
-                                          context: DetailsContext) : CustomActionsItem {
+                                                context: DetailsContext) : CustomActionsItem {
     const category = root.subCategoryByNameOrCreate(categoryName);
     for (const child of category.children()) {
         if (isInstanceOfCustomActionsItem(child)) {
