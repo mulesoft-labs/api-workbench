@@ -164,7 +164,8 @@ export function getSuggestions(request: AtomCompletionRequest) {
         text: editor.getText()
     });
 
-    return ramlServer.getNodeClientConnection().getSuggestions(request.editor.getPath(), offset);
+    return Promise.resolve([])
+    //return ramlServer.getNodeClientConnection().getSuggestions(request.editor.getPath(), offset);
     // return suggestions.suggest(editorState, new FSProvider());
 }
 

@@ -1,5 +1,5 @@
 'fileTypes': [
-  'raml'
+  'raml', 'yaml'
 ]
 'name': 'RAML'
 'patterns': [

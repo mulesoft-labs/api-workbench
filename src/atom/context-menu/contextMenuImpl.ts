@@ -237,40 +237,41 @@ export function initializeActionBasedMenu(selector? : string) {
             if (!path) return Promise.resolve([]);
 
             let position = editorManager.getCurrentPosition();
+            return Promise.resolve([]);
 
-            return ramlServer.getNodeClientConnection()
-                .calculateEditorContextActions(path, position).then(currentActions=>{
-
-                var result : contextMenu.IContextMenuItem[] = []
-
-                currentActions.forEach(action => {
-                    // if (action.hasUI) {
-                    //     return;
-                    // }
-
-                    result.push({
-
-                        selector : selector,
-
-                        name : action.label ? action.label : action.name,
-
-                        categories : action.category,
-
-                        onClick: ()=>{
-                            launchServerAction(path, action, position)
-                        },
-
-                        children: []
-                    })
-                })
-
-                let updatedPosition = editorManager.getCurrentPosition();
-                if (updatedPosition !== position) {
-                    return [];
-                }
-
-                return result
-            })
+            // return ramlServer.getNodeClientConnection()
+            //     .calculateEditorContextActions(path, position).then(currentActions=>{
+            //
+            //     var result : contextMenu.IContextMenuItem[] = []
+            //
+            //     currentActions.forEach(action => {
+            //         // if (action.hasUI) {
+            //         //     return;
+            //         // }
+            //
+            //         result.push({
+            //
+            //             selector : selector,
+            //
+            //             name : action.label ? action.label : action.name,
+            //
+            //             categories : action.category,
+            //
+            //             onClick: ()=>{
+            //                 launchServerAction(path, action, position)
+            //             },
+            //
+            //             children: []
+            //         })
+            //     })
+            //
+            //     let updatedPosition = editorManager.getCurrentPosition();
+            //     if (updatedPosition !== position) {
+            //         return [];
+            //     }
+            //
+            //     return result
+            // })
         }
 
     }

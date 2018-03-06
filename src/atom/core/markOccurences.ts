@@ -51,23 +51,24 @@ export class MarkOccurrenceRunnable implements ramlServer.Runnable<void> {
      * Should resolve the promise when finished.
      */
     run(): Promise<void> {
-        return ramlServer.getNodeClientConnection().markOccurrences(this.getMarkOccurrencesPath(), this.offset)
-            .then(ranges => {
-
-                let currentPosition = this.editor.getCursorBufferPosition();
-                if (currentPosition.row != this.position.row || currentPosition.column != this.position.column) {
-                    //data is outdated
-                    return;
-                }
-
-                let bufferRanges: atom.Range[] = ranges.map(range=>{
-                    return {
-                        start: this.editor.getBuffer().positionForCharacterIndex(range.start),
-                        end: this.editor.getBuffer().positionForCharacterIndex(range.end),
-                    }
-                })
-                markOccurences(this.editor, bufferRanges);
-        })
+        return Promise.resolve()
+        // return ramlServer.getNodeClientConnection().markOccurrences(this.getMarkOccurrencesPath(), this.offset)
+        //     .then(ranges => {
+        //
+        //         let currentPosition = this.editor.getCursorBufferPosition();
+        //         if (currentPosition.row != this.position.row || currentPosition.column != this.position.column) {
+        //             //data is outdated
+        //             return;
+        //         }
+        //
+        //         let bufferRanges: atom.Range[] = ranges.map(range=>{
+        //             return {
+        //                 start: this.editor.getBuffer().positionForCharacterIndex(range.start),
+        //                 end: this.editor.getBuffer().positionForCharacterIndex(range.end),
+        //             }
+        //         })
+        //         markOccurences(this.editor, bufferRanges);
+        // })
     }
     /**
      * Performs the actual business logics synchronously.

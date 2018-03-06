@@ -71,7 +71,7 @@ class EditorManager{
 
     performanceDebug=true;
 
-    private static DETAILS_SUPPORT = true
+    private static DETAILS_SUPPORT = false
 
     getPath(): string {
         console.log("ETM::GetPath");
@@ -83,7 +83,7 @@ class EditorManager{
     constructor(display: boolean = true) {
         manager = window["manager"] = this;
 
-        this.markOccurrencesReconciler = new ramlServer.Reconciler(ramlServer.getNodeClientConnection(), 200);
+        //this.markOccurrencesReconciler = new ramlServer.Reconciler(ramlServer.getNodeClientConnection(), 200);
 
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
 
@@ -112,12 +112,12 @@ class EditorManager{
 
         markOccurrences.clearOccurences(editor);
 
-        this.markOccurrencesReconciler.schedule(new markOccurrences.MarkOccurrenceRunnable(editor, newBufferPosition));
+        //this.markOccurrencesReconciler.schedule(new markOccurrences.MarkOccurrenceRunnable(editor, newBufferPosition));
 
         let buffer = editor.getBuffer();
         let pos = buffer.characterIndexForPosition(editor.getCursorBufferPosition());
 
-        ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
+        //ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
 
         this.currentPosition = pos;
     }
@@ -302,7 +302,7 @@ class EditorManager{
         
         var extName = path.extname(editorPath);
         
-        if(extName !== '.raml') {
+        if(extName !== '.raml' && extName !== '.yaml') {
             return false;
         }
         
