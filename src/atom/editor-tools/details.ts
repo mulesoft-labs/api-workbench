@@ -58,8 +58,8 @@ export function updateDetailsPanel(node: hl.IHighLevelNode, panel: UI.Panel, upd
     var sadd:any[]=[].concat(l['did-add-style-element']);
     var sremove:any[]=[].concat(l['did-remove-style-element']);
     var schange:any[]=[].concat(l['did-update-style-element']);
-    var cfgCh:any[]=[].concat(cfg.emitter.handlersByEventName['did-change']);
-    var grammars=(<any>atom).grammars.emitter.handlersByEventName;
+    var cfgCh:any[]=[].concat(cfg.emitter.handlersByEventName['did-change']);    
+    var grammars=((<any>atom).grammars.emitter || (<any>atom).grammars.textmateRegistry.emitter).handlersByEventName;
     var addGrammar:any[]=[].concat(grammars["did-add-grammar"]);
     var updateGrammar:any[]=[].concat(grammars["did-update-grammar"]);
     var emptyGrammarListeners=[].concat((<any>atom).grammars.nullGrammar.emitter.handlersByEventName["did-update"]);

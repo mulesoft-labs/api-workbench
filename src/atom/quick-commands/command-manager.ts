@@ -192,7 +192,7 @@ export function initialize() {
         var listenersArray = (<any>atom.commands.selectorBasedListenersByCommandName)
             ["command-palette:toggle"]
         listenersArray.forEach(listener => {
-            if (listener.callback.commandManager) {
+            if (listener.callback && listener.callback.commandManager) {
                 listener.sequenceNumber = 100500000
             }
         })
