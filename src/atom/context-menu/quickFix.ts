@@ -801,7 +801,7 @@ export function initialize() {
 
         category: ["Code"],
 
-        onClick: state=>createGlobalSchema(<hl.IAttribute> state),
+        onClick: (contextState, uiState)=>createGlobalSchema(<hl.IAttribute> contextState),
 
         stateCalculator: new CreateGlobalSchemaStateCalculator(),
 

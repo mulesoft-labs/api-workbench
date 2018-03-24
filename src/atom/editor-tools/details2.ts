@@ -569,7 +569,14 @@ class PropertyEditorInfo extends Item{
 
                     newNode = true;
 
-                    this.node = parent.element(propId) || parent.attr(propId);
+                    var localId = this.node.localId();
+
+                    var elementsOfProperty: hl.IHighLevelNode[] = parent.elementsOfKind(propId);
+                    var equalLocalIdElement =
+                        _.find(elementsOfProperty, element=>element.localId()==localId)
+
+                    this.node = equalLocalIdElement ||
+                        parent.element(propId) || parent.attr(propId);
 
                     attr = this.node.attrOrCreate(this.property.nameId());
                 }

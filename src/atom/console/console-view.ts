@@ -505,7 +505,8 @@ export class RAMLConsoleView extends SpacePenViews.ScrollView {
     // Reset all watchers, consider it a fresh parse.
     this.stopWatching()
 
-    this.project = rp.project.createProject(path.dirname(this.getFilename()), this.resolver)
+    this.project = rp.project.createProject(path.dirname(this.getFilename()),
+        <any>this.resolver)
 
     this.updateRAML()
   }
