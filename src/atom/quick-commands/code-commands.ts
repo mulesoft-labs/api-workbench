@@ -112,6 +112,7 @@ export function registerQuickCommands(cm: qc.CommandManager) {
 
     contextActions.addAction({
         name : "Add new resource",
+        id : "Add new resource",
         target : contextActions.TARGET_RAML_EDITOR_NODE,
         category : ["Add new..."],
         onClick : state=>dialogs.newResource(editorTools.aquireManager().getSelectedNode()),
@@ -121,6 +122,7 @@ export function registerQuickCommands(cm: qc.CommandManager) {
 
     contextActions.addAction({
         name : "Create new API",
+        id : "Create new API",
         target : contextActions.TARGET_RAML_EDITOR_NODE,
         category : ["Add new..."],
         onClick : state=>dialogs.newApi(),

@@ -76,7 +76,7 @@ export class RamlOutline extends SC.Scrollable {
             var treeModel = viewer && viewer.getTreeModel();
             
             var structureNodeElement = treeModel && treeModel.findElement((structureNode: ramlOutline.StructureNode) => {
-                return node && node === structureNode.getSource();
+                return node && (<any>node) == structureNode.getSource();
             });
             
             if (structureNodeElement && viewer != null) {

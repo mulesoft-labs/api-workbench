@@ -78,6 +78,22 @@ class FSProvider implements suggestions.IFSProvider {
         return path.dirname(contentPath);
     }
 
+    content(filePath: string): string {
+        try {
+            return fs.readFileSync(filePath).toString();
+        } catch(exception) {
+            return undefined;
+        }
+    }
+
+    contentAsync(filePath: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            fs.readFile(filePath, (err, data) => {
+                resolve(err ? undefined : data.toString());
+            });
+        })
+    }
+
     dirName(childPath: string): string {
         return path.dirname(childPath);
     }

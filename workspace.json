@@ -6,41 +6,60 @@
     "gitBranch" : false,
     "installTypings" : true
   },
+  "raml-actions" : {
+    "build" : "npm run build",
+    "gitUrl" : "https://github.com/mulesoft-labs/raml-actions.git",
+    "gitBranch" : "develop",
+    "installTypings" : true
+  },
+  "raml-outline" : {
+    "build" : "npm run build",
+    "gitUrl" : "https://github.com/mulesoft/raml-outline.git",
+    "gitBranch" : "develop",
+    "installTypings" : false
+  },
   "raml-suggestions" : {
     "build" : "npm run build",
     "test" : "npm run test-cov",
     "gitUrl" : "https://github.com/mulesoft/raml-suggestions.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "raml-1-parser" : {
     "build" : "npm run build",
+    "test" : "gulp test",
     "gitUrl" : "https://github.com/raml-org/raml-js-parser-2.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "raml-definition-system" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/raml-org/raml-definition-system.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "raml-typesystem" : {
     "build" : "npm run build",
+    "test" : "npm run test-cov",
     "gitUrl" : "https://github.com/raml-org/typesystem-ts.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "raml-xml-validation" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/raml-xml-validation.git",
-    "installTypings" : true
+    "installTypings" : false
   },
   "raml-json-validation" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/raml-json-validation.git",
-    "installTypings" : true
+    "installTypings" : false
   },
   "ts-structure-parser" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/ts-structure-parser.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "yaml-ast-parser" : {
     "build" : "npm run build",
@@ -49,11 +68,13 @@
   "ts-model" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/ts-model.git",
-    "installTypings" : true
+    "gitBranch" : "develop",
+    "installTypings" : false
   },
   "atom-ui-lib" : {
     "build" : "npm run build",
     "gitUrl" : "https://github.com/mulesoft-labs/ui-libs.git",
+    "gitBranch" : "develop",
     "installTypings" : true
   }
 }

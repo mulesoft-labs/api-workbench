@@ -1,6 +1,6 @@
 {
   "name": "api-workbench",
-  "version": "0.8.47",
+  "version": "0.8.48",
   "description": "API Workbench",
   "private": true,
   "main": "./src/atom/main",
@@ -16,9 +16,9 @@
     "test": "gulp build && gulp test && npm run test-sites",
     "build": "gulp build",
     "watch": "gulp watch",
-    "pullall" : "dev-env-installer pullall",
-    "buildall" : "dev-env-installer buildall",
-    "testall" : "dev-env-installer testall",
+    "pullall": "dev-env-installer pullall",
+    "buildall": "dev-env-installer buildall",
+    "testall": "dev-env-installer testall",
     "devInstall": "dev-env-installer install"
   },
   "providedServices": {
@@ -44,13 +44,14 @@
     "arrify": "^1.0.0",
     "atom-package-deps": "^4.6.0",
     "atom-space-pen-views": "^2.0.5",
-    "atom-ui-lib": "0.0.17",
+    "atom-ui-lib": "0.0.19",
     "basarat-text-buffer": "^4.1.5",
     "classnames": "^2.0.0",
     "client-oauth2": "^0.3.0",
     "emissary": "^1.3.3",
+    "fuzzaldrin-plus": "^0.6.0",
     "http-response-object": "^1.0.1",
-    "invariant": "^2.0.0",
+    "invariant": "^2.2.2",
     "jquery": "^2.1.3",
     "jsonix": "^2.3.0",
     "know-your-http-well": "~0.2.0",
@@ -59,6 +60,10 @@
     "mkdirp": "^0.5.0",
     "popsicle": "^3.2.2",
     "pretty-data": "^0.40.0",
+    "raml-1-parser": "1.1.41",
+    "raml-actions": "0.0.25",
+    "raml-outline": "0.0.16",
+    "raml-suggestions": "0.0.47",
     "react": "^0.13.2",
     "react-pure-render": "^1.0.1",
     "underscore": "^1.8.2",
@@ -67,13 +72,10 @@
     "xmldom": "0.1.19",
     "xmlhttprequest": "^1.7.0",
     "xtend": "^4.0.1",
-    "yaml-ast-parser": "0.0.34",
-    "raml-1-parser": "1.1.30",
-    "raml-suggestions": "0.0.38",
-    "raml-actions" : "0.0.21",
-    "raml-outline" : "0.0.11"
+    "yaml-ast-parser": "0.0.40"
   },
   "devDependencies": {
+    "@types/node": "4.2.20",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.2",
     "gulp": "^3.8.11",
@@ -82,7 +84,7 @@
     "gulp-mocha": "^2.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
-    "gulp-typescript": "^2.11.0",
+    "gulp-typescript": "^3.2.2",
     "http-server": "^0.8.5",
     "json-loader": "^0.5.1",
     "mocha": "^2.2.1",
@@ -93,8 +95,8 @@
     "typings": "^0.6.8",
     "webpack": "1.4.2",
     "node-libs-browser": "^0.5.2",
-    "typescript": "1.8.7",
-    "dev-env-installer":"0.0.6",
-    "run-sequence":"^1.0.0"
+    "typescript": "2.5.2",
+    "dev-env-installer": "0.0.6",
+    "run-sequence": "^1.0.0"
   }
 }

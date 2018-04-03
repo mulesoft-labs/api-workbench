@@ -191,7 +191,7 @@ export class TextRange {
         }
         while(pos < this.contents.length-1) {
             var nextchar = this.contents[pos];
-            if(nextchar != ' ' || nextchar == '\r' || nextchar == '\n') break;
+            if(nextchar != ' ' || nextchar == <string>'\r' || nextchar == <string>'\n') break;
             pos++;
         }
         return new TextRange(this.contents, this.start, pos);

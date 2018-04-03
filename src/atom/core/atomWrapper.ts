@@ -39,6 +39,10 @@ export class Workspace {
     open(path, args) {
         atom.workspace.open(path, args);
     }
+
+    getCenter() {
+        return (<any>atom).workspace.getCenter();
+    }
 }
 
 export function open(pathsToOpen) {

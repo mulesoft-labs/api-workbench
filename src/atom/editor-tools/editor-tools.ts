@@ -111,7 +111,7 @@ class EditorManager{
                     this.unit=null;
                     this._currentNode=null;
                     this.currentEditor=null;
-                    global.cleanCache();
+                    (<any>global).cleanCache();
                     if (atom.workspace.paneForItem(this._view)) atom.workspace.paneForItem(this._view).destroy();
                     if (atom.workspace.paneForItem(this._details)) atom.workspace.paneForItem(this._details).destroy();
                     this.opened = false;

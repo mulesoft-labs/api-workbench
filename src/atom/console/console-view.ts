@@ -505,7 +505,8 @@ export class RAMLConsoleView extends SpacePenViews.ScrollView {
     // Reset all watchers, consider it a fresh parse.
     this.stopWatching()
 
-    this.project = rp.project.createProject(path.dirname(this.getFilename()), this.resolver)
+    this.project = rp.project.createProject(path.dirname(this.getFilename()),
+        <any>this.resolver)
 
     this.updateRAML()
   }
@@ -630,7 +631,9 @@ export class FSResolverImpl {
     return new Promise(function(reject,resolve){
       fs.readdir(path,(err,files)=>{
         if(err!=null){
-          return reject(err);
+          var message: string[] = <any>err;
+
+          return reject(message);
         }
         resolve(files);
       });

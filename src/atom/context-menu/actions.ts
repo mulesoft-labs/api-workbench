@@ -312,12 +312,12 @@ class FillBodyDialog {
 
 export function register() {
 
-    contextActions.uiActions.registerMoveContentsAction((uiFinishedCallback : (destination:string)=>void)=>{
-        new MoveToNewFileDialog(uiFinishedCallback).show()
-    });
-
-    contextActions.uiActions.registerCompleteBodyAction(
-        (uiFinishedCallback : (uiState:contextActions.uiActions.ICompleteBodyUIState)=>void)=>{
-        new FillBodyDialog(uiFinishedCallback).show()
-    });
+    // contextActions.uiActions.registerMoveContentsAction((uiFinishedCallback : (destination:string)=>void)=>{
+    //     new MoveToNewFileDialog(uiFinishedCallback).show()
+    // });
+    //
+    // contextActions.uiActions.registerCompleteBodyAction(
+    //     (uiFinishedCallback : (uiState:contextActions.uiActions.ICompleteBodyUIState)=>void)=>{
+    //     new FillBodyDialog(uiFinishedCallback).show()
+    // });
 }

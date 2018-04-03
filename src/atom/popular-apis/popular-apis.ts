@@ -275,5 +275,21 @@ export function showPopularApis() {
         return;
     }
 
-    editorTools.doSplit(new RamlOutline(),editorTools.SplitDirections.RIGHT);
+    var center = atom.workspace.getCenter();
+
+    var centerPane = center.getPanes()[0];
+    
+    var pane = centerPane.splitRight({});
+    
+    var view = new RamlOutline();
+
+    pane.addItem(view);
+
+    atom.workspace.onDidAddPaneItem(event => {
+        setTimeout(()=> {
+            if(event.pane === pane && event.item !== view) {
+                pane.moveItemToPane(event.item, centerPane, null);
+            }
+        }, 20);
+    });
 }
