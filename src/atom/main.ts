@@ -37,7 +37,9 @@ module package_entry_point {
                     'api-workbench:new-project':decl.newProject,
                     /*'api-workbench:select-node':decl.select,*/
                     /*'api-workbench:revalidate':decl.revalidate*/
-                }))
+                }));
+
+                subscriptions.add(atom.workspace.observeTextEditors(require("./grammar-detect").handle));
 
                 //subscriptions.add(atom.workspace.addOpener(Console.opener))
                 ////subscriptions.add(atom.workspace.addOpener(RamlScriptReport.opener))
@@ -79,7 +81,9 @@ module package_entry_point {
         grammars: {
             type: 'array',
             default: [
-                'source.raml'
+                'source.raml'//,
+                //'source.json',
+                //'source.yaml'
             ]
         },
         openConsoleInSplitPane: {
