@@ -1,0 +1,172 @@
+'scopeName': 'source.sjson'
+'name': 'SJSON'
+'fileTypes': [
+  'sjson'
+]
+'patterns': [
+  {
+    'include': '#value'
+  }
+]
+'repository':
+  'array':
+    'begin': '\\['
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.array.begin.json'
+    'end': '(,)?[\\s\\n]*(\\])'
+    'endCaptures':
+      '1':
+        'name': 'invalid.illegal.trailing-array-separator.json'
+      '2':
+        'name': 'punctuation.definition.array.end.json'
+    'name': 'meta.structure.array.json'
+    'patterns': [
+      {
+        'include': '#value'
+      }
+      {
+        'match': ','
+        'name': 'punctuation.separator.array.json'
+      }
+      {
+        'match': '[^\\s\\]]'
+        'name': 'invalid.illegal.expected-array-separator.json'
+      }
+    ]
+  'constant':
+    'match': '\\b(true|false|null)\\b'
+    'name': 'constant.language.json'
+  'method':
+    'match': '"(get|post|put|patch|head|delete|options|trace|connect)"'
+    'name': 'sjson.method'
+  'referenceString':
+    'match': '"\\$ref"'
+    'name': 'sjson.refstring'
+  'number':
+    'match': '-?(?=[1-9]|0(?!\\d))\\d+(\\.\\d+)?([eE][+-]?\\d+)?'
+    'name': 'constant.numeric.json'
+  'response':
+      'match': '"([1-9]|0)+"'
+      'name': 'sjson.response'
+  'object':
+    'begin': '{'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.dictionary.begin.json'
+    'end': '}'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.dictionary.end.json'
+    'name': 'meta.structure.dictionary.json'
+    'patterns': [
+      {
+        # the key
+        'begin': '(?=")'
+        'end': '(?<=")'
+        'name': 'sjson.key'
+        'patterns': [
+          {
+           'include': '#method'
+          }
+          {
+            'include': '#pathString'
+          }
+          {
+            'include': '#referenceString'
+          }
+          {
+            'include': '#response'
+          }
+          {
+            'include': '#string'
+          }
+        ]
+      }
+      {
+        'begin': ':'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.separator.dictionary.key-value.json'
+        'end': '(,)(?=[\\s\\n]*})|(,)|(?=})'
+        'endCaptures':
+          '1':
+            'name': 'invalid.illegal.trailing-dictionary-separator.json'
+          '2':
+            'name': 'punctuation.separator.dictionary.pair.json'
+        'name': 'meta.structure.dictionary.value.json'
+        'patterns': [
+          {
+            # the value
+            'include': '#value'
+          }
+          {
+            'match': '[^\\s,]'
+            'name': 'invalid.illegal.expected-dictionary-separator.json'
+          }
+        ]
+      }
+      {
+        'match': '[^\\s}]'
+        'name': 'invalid.illegal.expected-dictionary-separator.json'
+      }
+    ]
+  'string':
+    'begin': '"'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.string.begin.json'
+    'end': '"'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.string.end.json'
+    'name': 'string.quoted.double.json'
+    'patterns': [
+      {
+        'match': '''(?x)
+          \\\\                # a literal backslash
+          (                   # followed by
+            ["\\\\/bfnrt]     # one of these characters
+            |                 # or
+            u[0-9a-fA-F]{4}   # a u and four hex digits
+          )
+        '''
+        'name': 'constant.character.escape.json'
+      }
+      {
+        'match': '\\\\.'
+        'name': 'invalid.illegal.unrecognized-string-escape.json'
+      }
+    ]
+  'pathString':
+        'begin': '"(/|#/|http:|https:)'
+        'beginCaptures':
+          '0':
+            'name': 'sjson.path.begin'
+        'end': '"'
+        'endCaptures':
+          '0':
+            'name': 'sjson.path.end'
+        'name': 'sjson.path'
+  'value':
+    # the 'value' diagram at http://json.org
+    'patterns': [
+      {
+        'include': '#constant'
+      }
+      {
+        'include': '#number'
+      }
+      {
+        'include': '#pathString'
+      }
+      {
+        'include': '#string'
+      }
+      {
+        'include': '#array'
+      }
+      {
+        'include': '#object'
+      }
+    ]
