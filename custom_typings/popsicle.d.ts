@@ -101,8 +101,12 @@ declare module 'popsicle' {
       then <T> (onResolve: (response?: Response) => T): Promise<T>
       then <T> (onResolve: void, onReject?: (error?: Error) => T): Promise<T>
       then <T> (onResolve: (response?: Response) => T, onReject?: (error?: Error) => T): Promise<T>
-      catch <T> (onReject: (error?: Error) => T): Promise<T>
+      //catch <T> (onReject: (error?: Error) => T): Promise<T>
+
+      catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<Response | TResult>
       exec (cb: (err?: Error, response?: Response) => any): void
+
+      readonly [Symbol.toStringTag]: "Promise";
     }
 
     class Response extends Headers {

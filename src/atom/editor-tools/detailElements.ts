@@ -59,7 +59,7 @@ class UpdateModelRunnable implements Runnable<ramlServer.IChangedDocument[]> {
         if(this.context.localModel) {
             this.context.localModel[this.item.id] = this.newValue;
 
-            return Promise.resolve();
+            return Promise.resolve([]);
         }
 
         const connection = ramlServer.getNodeClientConnection();

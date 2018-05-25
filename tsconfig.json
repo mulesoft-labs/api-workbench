@@ -5,7 +5,9 @@
     "declaration": false,
     "noImplicitAny": false,
     "removeComments": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": [ "dom", "es2015", "scripthost", "es2015.promise" ],
+    "moduleResolution": "node"
   },
   "exclude": [
     "apiworkbench.com",

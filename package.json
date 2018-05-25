@@ -72,7 +72,6 @@
     "promise-polyfill": "6.0.2"
   },
   "devDependencies": {
-    "@types/es6-promise": "*",
     "@types/node": "4.2.20",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.2",
