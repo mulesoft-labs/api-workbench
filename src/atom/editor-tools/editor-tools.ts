@@ -15,6 +15,8 @@ import UI=require("atom-ui-lib")
 import ramlServer = require("raml-language-server");
 import markOccurrences = require("../core/markOccurences")
 
+import grammarDetect = require("../grammar-detect");
+
 var _bmc : number = 0;
 function benchmark(func?: string): void {
     var t0 = new Date().getTime();
@@ -313,10 +315,10 @@ class EditorManager{
         var editor = atom.workspace.getActiveTextEditor();
         
         if(editor) {
-            this.setViewsDisplayStyle(this.isRaml(editor));
+            this.setViewsDisplayStyle(this.isAppropriateGrammar(editor));
         }
         
-        if(!editor || editor == this.currentEditor || !this.isRaml(editor)) {
+        if(!editor || editor == this.currentEditor || !this.isAppropriateGrammar(editor)) {
             return;
         }
 
@@ -373,8 +375,8 @@ class EditorManager{
                 + categoryNamesString, "EditorManager", "addListenersForStructure");
 
             var editor = atom.workspace.getActiveTextEditor();
-
-            if(!editor || !this.isRaml(editor)) {
+            
+            if(!editor || !this.isAppropriateGrammar(editor)) {
                 return;
             }
 
@@ -536,8 +538,15 @@ class EditorManager{
         // }
     }
 
-    placeholder: boolean = false;
+    isAppropriateGrammar(editor: any): boolean {
+        if(this.isRaml(editor) || grammarDetect.isSwaggerJson(<AtomCore.IEditor>editor) || grammarDetect.isSwaggerYaml(<AtomCore.IEditor>editor)) {
+            return true;
+        }
 
+        return false;
+    }
+
+    placeholder: boolean = false;
 }
 var manager : EditorManager = null;
 

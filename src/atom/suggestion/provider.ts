@@ -12,7 +12,7 @@ import _ = require('underscore');
 import ramlServer = require("raml-language-server");
 // import sharedAstInitializerInterfaces = require('../shared-ast-initializer-interfaces');
 
-export var selector= '.source.raml'
+export var selector= '.source.raml, .source.sjson, .source.syaml'
 export var disableForSelector= '.text.html .comment'
 export var filterSuggestions= true
 export var inclusionPriority= 1
@@ -164,8 +164,8 @@ export function getSuggestions(request: AtomCompletionRequest) {
         text: editor.getText()
     });
 
-    return Promise.resolve([])
-    //return ramlServer.getNodeClientConnection().getSuggestions(request.editor.getPath(), offset);
+    //return Promise.resolve([])
+    return ramlServer.getNodeClientConnection().getSuggestions(request.editor.getPath(), offset);
     // return suggestions.suggest(editorState, new FSProvider());
 }
 

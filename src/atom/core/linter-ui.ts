@@ -14,7 +14,9 @@ import editorManager = require("./editorManager");
 import editorTools = require("../editor-tools/editor-tools");
 import ramlServer = require("raml-language-server")
 
-export var grammarScopes = ['source.raml'];
+import grammarDetect = require("../grammar-detect");
+
+export var grammarScopes = ['source.raml', 'source.syaml', 'source.sjson'];
 
 export var scope = 'file';
 
@@ -55,6 +57,14 @@ function isRAMLUnit(editor) {
     var contents = editor.getBuffer().getText();
 
     return unitUtils.isRAMLUnit(contents)
+}
+
+function isAppropriateGrammar(editor: any): boolean {
+    if(isRAMLUnit(editor) || grammarDetect.isSwaggerJson(<AtomCore.IEditor>editor) || grammarDetect.isSwaggerYaml(<AtomCore.IEditor>editor)) {
+        return true;
+    }
+
+    return false;
 }
 
 var combErrors = function (result:any[]) {
@@ -282,7 +292,7 @@ function runValidationSheduleUpdater(textEditor: AtomCore.IEditor, resolve, reje
 }
 
 export function lint(textEditor: AtomCore.IEditor): Promise<any[]> {
-    if(!isRAMLUnit(textEditor)) {
+    if(!isAppropriateGrammar(textEditor)) {
         return Promise.resolve([]);
     }
     

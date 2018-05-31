@@ -34,7 +34,7 @@ function tryUpdateGrammarForLanguage(editor: AtomCore.IEditor, extension: string
     setGrammar(editor, "source." + extension);
 }
 
-function isSwaggerJson(editor: AtomCore.IEditor): boolean {
+export function isSwaggerJson(editor: AtomCore.IEditor): boolean {
     if(JSON.parse(editor.getText()).swagger) {
         return true;
     }
@@ -42,7 +42,7 @@ function isSwaggerJson(editor: AtomCore.IEditor): boolean {
     return false;
 }
 
-function isSwaggerYaml(editor: AtomCore.IEditor): boolean {
+export function isSwaggerYaml(editor: AtomCore.IEditor): boolean {
     if(editor.getText().trim().indexOf("swagger:") == 0) {
         return true;
     }
