@@ -119,7 +119,7 @@ class EditorManager{
         let buffer = editor.getBuffer();
         let pos = buffer.characterIndexForPosition(editor.getCursorBufferPosition());
 
-        //ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
+        ramlServer.getNodeClientConnection().positionChanged(manager.unitPath, pos);
 
         this.currentPosition = pos;
     }
@@ -250,13 +250,13 @@ class EditorManager{
         var aw = atom.workspace;
         var fpane = atom.workspace.paneForItem(this.getCurrentEditor());
         if (!fpane) return;
-        // if (!aw.paneForItem(this.getOrCreateView()))
-        //     doSplit(this.getOrCreateView());
-        //
-        // if (EditorManager.DETAILS_SUPPORT) {
-        //     if (!aw.paneForItem(manager.getDetails()))
-        //         doSplit(this.getDetails(), SplitDirections.BOTTOM);
-        // }
+        if (!aw.paneForItem(this.getOrCreateView()))
+            doSplit(this.getOrCreateView());
+
+        if (EditorManager.DETAILS_SUPPORT) {
+            if (!aw.paneForItem(manager.getDetails()))
+                doSplit(this.getDetails(), SplitDirections.BOTTOM);
+        }
 
         this.opened = true;
     }

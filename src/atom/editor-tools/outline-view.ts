@@ -126,22 +126,22 @@ export class RamlOutline extends SC.Scrollable {
             text: activeEditor.getText()
         });
 
-        // let structurePromise = ramlServer.getNodeClientConnection().getStructure(unitPath);
-        // if (structurePromise) {
-        //     structurePromise.then(structure=>{
-        //
-        //         this.createTree(structure);
-        //
-        //         (<any>this).addClass('raml-outline');
-        //
-        //         this._children=[];
-        //         this.addChild(this._rs);
-        //         this.html(this.innerRenderUI());
-        //     }).catch(error=>{
-        //         //ignoring, the error is already reported to the log, and we dont need to display
-        //         //it to user in other way
-        //     })
-        // }
+        let structurePromise = ramlServer.getNodeClientConnection().getStructure(unitPath);
+        if (structurePromise) {
+            structurePromise.then(structure=>{
+
+                this.createTree(structure);
+
+                (<any>this).addClass('raml-outline');
+
+                this._children=[];
+                this.addChild(this._rs);
+                this.html(this.innerRenderUI());
+            }).catch(error=>{
+                //ignoring, the error is already reported to the log, and we dont need to display
+                //it to user in other way
+            })
+        }
 
     }
 
