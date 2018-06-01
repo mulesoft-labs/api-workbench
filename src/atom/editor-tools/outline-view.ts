@@ -46,7 +46,7 @@ export class RamlOutline extends SC.Scrollable {
                     let activeEditor = getActiveEditor();
 
                     var p1 = activeEditor.getBuffer().positionForCharacterIndex(sender.selection.elements[0].start);
-                    var p2 = activeEditor.getBuffer().positionForCharacterIndex(sender.selection.elements[0].end);
+                    var p2 = activeEditor.getBuffer().positionForCharacterIndex(sender.selection.elements[0].start);
 
                     activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
                 }
