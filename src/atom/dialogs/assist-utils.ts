@@ -453,19 +453,19 @@ export function gotoDeclaration(){
     let offset = editor.getBuffer().characterIndexForPosition(position);
     let path = editor.getPath();
 
-    // ramlServer.getNodeClientConnection().openDeclaration(path, offset).then(locations=>{
-    //     if (!locations) return;
-    //
-    //     atom.workspace.open(locations[0].uri,{}).then(x=>{
-    //
-    //         let activeEditor = getActiveEditor();
-    //
-    //         var p1 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.start);
-    //         var p2 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.end);
-    //
-    //         activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
-    //     });
-    // })
+    ramlServer.getNodeClientConnection().openDeclaration(path, offset).then(locations=>{
+        if (!locations || locations.length == 0) return;
+
+        atom.workspace.open(locations[0].uri,{}).then(x => {
+
+            let activeEditor = getActiveEditor();
+
+            var p1 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.start);
+            var p2 = activeEditor.getBuffer().positionForCharacterIndex(locations[0].range.end);
+
+            activeEditor.setSelectedBufferRange({start: p1, end: p2}, {});
+        });
+    })
 }
 
 // export class MoveToNewFileDialog{
@@ -731,11 +731,11 @@ export function findUsagesImpl(renderer:(t:ILocation[])=>any=display){
     let offset = editor.getBuffer().characterIndexForPosition(position);
     let path = editor.getPath();
 
-    // ramlServer.getNodeClientConnection().findReferences(path, offset).then(locations=>{
-    //     if (!locations) return;
-    //
-    //     renderer(locations);
-    // })
+    ramlServer.getNodeClientConnection().findReferences(path, offset).then(locations=>{
+        if (!locations) return;
+
+        renderer(locations);
+    })
 }
 
 function display(n:ILocation[]){

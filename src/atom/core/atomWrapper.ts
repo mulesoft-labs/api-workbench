@@ -4,6 +4,10 @@ export class Workspace {
         return (<any>atom.workspace).onDidChangeActivePaneItem(callback);
     }
 
+    onDidOpen(callback:(arg:any) => void):void {
+        return (<any>atom.workspace).onDidOpen(callback);
+    }
+
     addModalPanel(arg:AddModalPanelArg):any {
         return atom.workspace.addModalPanel(arg);
     }

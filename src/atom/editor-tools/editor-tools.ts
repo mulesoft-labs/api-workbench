@@ -88,6 +88,7 @@ class EditorManager{
         //this.markOccurrencesReconciler = new ramlServer.Reconciler(ramlServer.getNodeClientConnection(), 200);
 
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
+        atom.workspace.onDidOpen(e => this.updateEverything(display));
 
         atom.workspace.observeTextEditors(editor=>{
             editor.onDidDestroy(()=>{

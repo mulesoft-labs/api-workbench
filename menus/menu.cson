@@ -17,6 +17,21 @@
     }
   ],
 
+  'atom-text-editor[data-grammar="source syaml"]': [
+      {
+        label: 'Go To Definition (OAS)',
+        command: 'api-workbench:go-to-definition'
+      },
+      {
+        label: 'Rename RAML Element',
+        command: 'api-workbench:rename'
+      },
+      {
+        label: 'Find usages',
+        command:  'api-workbench:find-usages'
+      }
+    ]
+
   'atom-text-editor[data-grammar="source raml"]': [
     {
       label: 'Go To Definition (RAML)',
@@ -32,6 +47,20 @@
     }
   ]
 
+  'atom-text-editor[data-grammar="source sjson"]': [
+      {
+        label: 'Go To Definition (OAS)',
+        command: 'api-workbench:go-to-definition'
+      },
+      {
+        label: 'Rename RAML Element',
+        command: 'api-workbench:rename'
+      },
+      {
+        label: 'Find usages',
+        command:  'api-workbench:find-usages'
+      }
+    ]
 'menu': [
   {
     label: 'Packages',
