@@ -88,8 +88,7 @@ class EditorManager{
         //this.markOccurrencesReconciler = new ramlServer.Reconciler(ramlServer.getNodeClientConnection(), 200);
 
         atom.workspace.onDidChangeActivePaneItem(e => this.updateEverything(display));
-        atom.workspace.onDidOpen(e => this.updateEverything(display));
-
+        
         atom.workspace.observeTextEditors(editor=>{
             editor.onDidDestroy(()=>{
 
@@ -388,7 +387,7 @@ class EditorManager{
     private addListenersOnMove(cedit) {
         var movingPane=false;
         atom.workspace.onDidAddPaneItem(event=> {
-            if (movingPane || this.isETPane(event.pane) == false || event.item == this.getOrCreateView() || (EditorManager.DETAILS_SUPPORT && event.item == this.getDetails())) return event;
+            if (movingPane || this.isETPane(event.pane) == false || (event.item && !event.item.getText && event.item == this.getOrCreateView()) || (EditorManager.DETAILS_SUPPORT && event.item == this.getDetails())) return event;
             setTimeout(()=> {
                 try {
                     var fpane = atom.workspace.paneForItem(cedit);
