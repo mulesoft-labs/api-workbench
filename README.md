@@ -1,6 +1,7 @@
 # API Workbench
 
 [![Build Status](https://travis-ci.org/mulesoft/api-workbench.svg?branch=code)](https://travis-ci.org/mulesoft/api-workbench) [![Stories in Ready](https://badge.waffle.io/mulesoft/api-workbench.png?label=ready&title=Ready)](https://waffle.io/mulesoft/api-workbench)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmulesoft%2Fapi-workbench.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmulesoft%2Fapi-workbench?ref=badge_shield)
 
 ![API Workbench](https://dl.dropboxusercontent.com/u/497895/__permalinks/api-workbench-slide-small.png)
 
@@ -28,3 +29,7 @@ Alternatively, open `Settings/Preferences -> Install` and search for `api-workbe
 ## Contribution
 
 If you want to contribute to this project, please read our [contribution guide](CONTRIBUTION.md) first.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmulesoft%2Fapi-workbench.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmulesoft%2Fapi-workbench?ref=badge_large)
