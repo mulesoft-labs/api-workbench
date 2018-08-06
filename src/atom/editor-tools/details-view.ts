@@ -13,7 +13,7 @@ import fs=require("fs")
 import atom = require('../core/atomWrapper');
 import _=require("underscore")
 import pair = require("../../util/pair");
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 import {
     Reconciler
 } from "./reconciler"

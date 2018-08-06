@@ -12,7 +12,7 @@ import pair = require("../../util/pair");
 import detailsView=require("./details-view")
 import outlineView=require("./outline-view")
 import UI=require("atom-ui-lib")
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 import markOccurrences = require("../core/markOccurences")
 
 import grammarDetect = require("../grammar-detect");

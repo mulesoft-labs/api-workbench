@@ -29,8 +29,8 @@ import tooltip=require("../core/tooltip-manager")
 import linterUI = require("../core/linter-ui")
 
 import editorTools = require("../editor-tools/editor-tools")
-import ramlServer = require("raml-language-server")
-import {ILocation} from "raml-language-server/dist/common/typeInterfaces";
+import ramlServer = require("api-language-server")
+import {ILocation} from "api-language-server/dist/common/typeInterfaces";
 import textEditProcessor = ramlServer.textEditProcessor
 
 // import {universeHelpers} from "raml-1-parser/dist/index";

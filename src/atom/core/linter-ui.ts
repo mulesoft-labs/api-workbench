@@ -12,7 +12,7 @@ var TextBuffer = require("basarat-text-buffer");
 
 import editorManager = require("./editorManager");
 import editorTools = require("../editor-tools/editor-tools");
-import ramlServer = require("raml-language-server")
+import ramlServer = require("api-language-server")
 
 import grammarDetect = require("../grammar-detect");
 
@@ -25,7 +25,7 @@ export var lintOnFly = true;
 import {
     getNodeClientConnection,
     IValidationReport
-} from 'raml-language-server'
+} from 'api-language-server'
 
 export function relint(editor:AtomCore.IEditor) {
     Promise.resolve("").then(editorManager.toggleEditorTools);

@@ -9,7 +9,7 @@ import path = require ('path')
 import _ = require('underscore');
 
 // import suggestions = require('raml-suggestions');
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 // import sharedAstInitializerInterfaces = require('../shared-ast-initializer-interfaces');
 
 export var selector= '.source.raml, .source.sjson, .source.syaml'

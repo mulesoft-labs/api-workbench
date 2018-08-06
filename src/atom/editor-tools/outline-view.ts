@@ -21,7 +21,7 @@ import pair = require("../../util/pair");
 // import universeHelpers = rp.universeHelpers;
 // import ramlOutline = require("raml-outline")
 // import outlineCommon = require("./outline-common")
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 
 export function getActiveEditor() {
     var activeEditor = atom.workspace.getActiveTextEditor()

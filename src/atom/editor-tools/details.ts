@@ -12,7 +12,7 @@ export type DetailsContext = detailElements.DetailsContext;
 
 var HTTPANDHTTPS="HTTP, HTTPS"
 var HTTPHTTPS="HTTP/HTTPS"
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 
 export var nodes={
     Api:{

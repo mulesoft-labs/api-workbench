@@ -1,6 +1,6 @@
 import _ = require("underscore")
 
-import ramlServer = require("raml-language-server")
+import ramlServer = require("api-language-server")
 import contextMenu = require("./contextMenuInterfaces")
 import editorTools = require("../editor-tools/editor-tools")
 
@@ -10,7 +10,7 @@ import mkdirp = require("mkdirp")
 import pathModule = require("path")
 import actionUIManager = require("./actionUIManager")
 import uiBuilder = require("../editor-tools/detailElements")
-import {IExecutableAction} from "raml-language-server/dist/common/typeInterfaces";
+import {IExecutableAction} from "api-language-server/dist/common/typeInterfaces";
 
 var contributors: { [s: string]: contextMenu.IContextMenuContributor; } = {};
 

@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/main.d.ts" />
 
 import atom = require('../core/atomWrapper');
-import ramlServer = require("raml-language-server");
+import ramlServer = require("api-language-server");
 
 export function markOccurences(editor: atom.ITextEditor, occurences: atom.Range[]) {
     var layer: any = getOccurencesLayer(editor);
