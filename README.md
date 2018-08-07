@@ -1,44 +1,28 @@
 # API Workbench Atom Plugin for RAML Server Prototype
 
 
+This repository branch contains contains the source code for the API Workbench plugin prototype, which serves as a client for API Language Server.
 
-![API Workbench](https://dl.dropboxusercontent.com/u/497895/__permalinks/api-workbench-slide-small.png)
+## Build Developer Version Guide
 
-This repository branch contains contains the source code for the API Workbench plugin prototype, which serves as a client for RAML Server.
+Set up ALS server as described in https://github.com/mulesoft/als
+Build JS artifact
+```sbt buildJS```
 
-## Installation Guide
+Inside als server folder move to:
+```cd als/js/static/api-language-server/```
+```npm install```
+```npm link```
 
-Dependencies:
+Clone amf-language-server branch of api workbench by:
+```git clone --single-branch -b amf-language-server https://github.com/mulesoft/api-workbench.git```
+```cd api-workbench```
 
-* Atom ([Installation Guide](http://flight-manual.atom.io/getting-started/sections/installing-atom/))
-
-
-Do uninstall mainstream api-workbench package in Atom preferences, if installed.
-
-Binary version:
-```
-git clone -b raml-server-bin --single-branch https://github.com/mulesoft/api-workbench.git
-
-cd api-workbench
-
-apm install
-
-apm link
-```
-
-Development (source) version:
-```
-git clone -b api-workbench-server --single-branch https://github.com/mulesoft/api-workbench.git
-
-cd api-workbench
-
-apm install
-
-sudo npm run devInstall
-
-sudo npm run buildall
-
-apm link
-```
-
-Using sudo is optional, but, depending on current user access rights it may be required.
+To link built server:
+```npm link api-language-server```
+```apm install```
+```gulp build```
+```apm link```
+launch atom
+If there is a red bug icon in the bottom-right corner of the screen, click it and then click "rebuild packages", this happens sometimes if fs native package was previously compiled on this OS. Click "restart atom".
+Accept all pop-ups in the top-right corner regarding dependencies installation.
