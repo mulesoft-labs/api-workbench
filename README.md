@@ -13,7 +13,7 @@ Build JS artifact:
 
 Inside als server folder move to:
 
-```cd als/js/static/api-language-server/```
+```cd als/js/target/api-language-server/```
 ```npm install```
 ```npm link```
 
