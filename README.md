@@ -14,7 +14,9 @@ Build JS artifact:
 Inside als server folder move to:
 
 ```cd als/js/target/api-language-server/```
+
 ```npm install```
+
 ```npm link```
 
 Clone amf-language-server branch of api workbench by:
@@ -25,8 +27,11 @@ Clone amf-language-server branch of api workbench by:
 To link built server:
 
 ```npm link api-language-server```
+
 ```apm install```
+
 ```gulp build```
+
 ```apm link```
 
 launch atom
