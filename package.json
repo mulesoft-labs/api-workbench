@@ -44,7 +44,7 @@
     "arrify": "^1.0.0",
     "atom-package-deps": "^4.6.0",
     "atom-space-pen-views": "^2.0.5",
-    "atom-ui-lib": "0.0.18",
+    "atom-ui-lib": "0.0.19",
     "basarat-text-buffer": "^4.1.5",
     "classnames": "^2.0.0",
     "client-oauth2": "^0.3.0",
@@ -68,7 +68,7 @@
     "xmlhttprequest": "^1.7.0",
     "xtend": "^4.0.1",
     "shortid": "^2.2.6",
-    "api-language-server" : "0.0.9",
+    "api-language-server" : "0.0.10",
     "promise-polyfill": "6.0.2"
   },
   "devDependencies": {
