@@ -1,6 +1,6 @@
 {
   "name": "api-workbench",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "API Workbench",
   "private": true,
   "main": "./src/atom/main",
@@ -68,7 +68,7 @@
     "xmlhttprequest": "^1.7.0",
     "xtend": "^4.0.1",
     "shortid": "^2.2.6",
-    "api-language-server" : "0.0.11",
+    "api-language-server" : "0.0.12",
     "promise-polyfill": "6.0.2"
   },
   "devDependencies": {
