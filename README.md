@@ -1,4 +1,4 @@
-# API Workbench Atom Plugin for RAML Server Prototype
+# AML Workbench Atom Plugin Prototype
 
 
 This repository branch contains contains the source code for the API Workbench plugin prototype, which serves as a client for API Language Server.
