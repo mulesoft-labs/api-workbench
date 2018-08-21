@@ -70,7 +70,7 @@ function constructAtomMenuItem(node : contextMenuInterfaces.IContextMenuItem) : 
     if (node.children.length > 0) {
         result.submenu = []
     } else {
-        var commandName = "api-workbench:"+node.name
+        var commandName = "aml-workbench:"+node.name
         var existingCommands = commandManager.listCommands()
         commandManager.addCommand(node.selector, commandName, node.onClick,
             commandManager.DYNAMIC_COMMAND_TAG)

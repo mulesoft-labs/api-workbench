@@ -231,14 +231,15 @@ gulp.task('package-copy', function () {
 });
 
 var API_WORKBENCH_PACKAGE_ORG = 'mulesoft'
-var API_WORKBENCH_PACKAGE_REPO = 'api-workbench'
+var API_WORKBENCH_PACKAGE_REPO = 'aml-workbench'
 
 
 gulp.task('package-json', function (done) {
   var packageJson = require('./package.json');
 
   var newPackageJson = {
-    name: 'api-workbench',
+    name: 'aml-workbench',
+    description: 'API Workbench based on AMF',
     version: packageJson.version,
     private: true,
     main: 'main.js',
@@ -346,8 +347,12 @@ gulp.task('package-clean', function () {
 });
 
 gulp.task('pre-package-publish', ['package-clean'], function (done) {
-  childProcess.exec('mkdir atom-package && cd atom-package && git clone https://github.com/'+API_WORKBENCH_PACKAGE_ORG+'/'+API_WORKBENCH_PACKAGE_REPO+'.git --branch raml-server-bin --single-branch . && find . ! -name ".git" ! -name "." ! -name ".." -maxdepth 1 -exec rm -rf {} +', done);
+  childProcess.exec('mkdir atom-package && cd atom-package && git clone https://github.com/'+API_WORKBENCH_PACKAGE_ORG+'/'+API_WORKBENCH_PACKAGE_REPO+'.git --branch bin --single-branch . && find . ! -name ".git" ! -name "." ! -name ".." -maxdepth 1 -exec rm -rf {} +', done);
 });
+
+// gulp.task('pre-package-publish', ['package-clean'], function (done) {
+//   childProcess.exec('mkdir atom-package && cd atom-package && git clone git@github.com:' + API_WORKBENCH_PACKAGE_ORG + '/' + API_WORKBENCH_PACKAGE_REPO +'.git --branch bin --single-branch . && find . ! -name ".git" ! -name "." ! -name ".." -maxdepth 1 -exec rm -rf {} +', done);
+// });
 
 gulp.task('package-deps', ['package-readme', 'package-build', 'package-copy', 'package-assets', 'package-json']);
 
@@ -355,8 +360,12 @@ gulp.task('pre-publish-and-package-deps', function(callback) {
   runSequence('pre-package-publish', 'package-deps', callback);
 });
 
+gulp.task('package-pre-release', ['pre-publish-and-package-deps'], function (done) {
+  childProcess.exec('VERSION=`node -p "require(\'./package.json\').version"` && cd atom-package && git add -A && git commit -m "Prepare v$VERSION"', done);
+});
+
 gulp.task('package-publish', ['pre-publish-and-package-deps'], function (done) {
-  childProcess.exec('VERSION=`node -p "require(\'./package.json\').version"` && cd atom-package && git add -A && git commit -m "Prepare v$VERSION" && git push', done);
+    childProcess.exec('VERSION=`node -p "require(\'./package.json\').version"` && cd atom-package && git add -A && git commit -m "Prepare v$VERSION" && git push && git tag "v$VERSION" && git push --tags && apm publish --tag "v$VERSION"', done);
 });
 
 /**

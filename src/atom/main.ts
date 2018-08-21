@@ -23,18 +23,18 @@ module package_entry_point {
     var subscriptions = new CompositeDisposable()
 
     export function activate (state) {
-        require('atom-package-deps').install('api-workbench', true)
+        require('atom-package-deps').install('aml-workbench', true)
             .then(() => {
                 subscriptions.add(atom.commands.add('atom-workspace', {
                     /*'api-workbench:popular-apis': apiList.showPopularApis,*/
-                    'api-workbench:editor-tools':editorTools.initEditorTools,
+                    'aml-workbench:editor-tools':editorTools.initEditorTools,
                     /*'api-workbench:console': Console.toggle,*/
-                    'api-workbench:go-to-definition':decl.gotoDeclaration,
-                    'api-workbench:find-usages':decl.findUsages,
+                    'aml-workbench:go-to-definition':decl.gotoDeclaration,
+                    'aml-workbench:find-usages':decl.findUsages,
                     /*'api-workbench:quick-outline':quickOutline.show,
                     'api-workbench:quick-commands': quickCommands.showCommands,*/
-                    'api-workbench:rename':decl.renameRAMLElement,
-                    'api-workbench:new-project':decl.newProject,
+                    'aml-workbench:rename':decl.renameRAMLElement,
+                    'aml-workbench:new-project':decl.newProject,
                     /*'api-workbench:select-node':decl.select,*/
                     /*'api-workbench:revalidate':decl.revalidate*/
                 }));

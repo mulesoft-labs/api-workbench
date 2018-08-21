@@ -223,7 +223,7 @@ function prePanelDisplay() {
 
         var contributor : ICommandContributor = contributors[contributorId];
         contributor.calculateItems().forEach(item => {
-            addCommand(item.selector, "api-workbench:"+item.id, item.callBack, DYNAMIC_COMMAND_TAG)
+            addCommand(item.selector, "aml-workbench:"+item.id, item.callBack, DYNAMIC_COMMAND_TAG)
         });
     }
 

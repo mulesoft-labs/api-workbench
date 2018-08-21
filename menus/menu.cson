@@ -2,63 +2,63 @@
   '.tree-view .file .name[data-name$=\\.raml]': [
     {
       label: 'Open RAML Outline',
-      command:  'api-workbench:todo'
+      command:  'aml-workbench:todo'
     }
   ],
 
   '.raml-outline': [
     {
       label: 'Rename RAML Element',
-      command: 'api-workbench:rename'
+      command: 'aml-workbench:rename'
     },
     {
       label: 'Find usages',
-      command: 'api-workbench:find-usages'
+      command: 'aml-workbench:find-usages'
     }
   ],
 
   'atom-text-editor[data-grammar="source syaml"]': [
       {
         label: 'Go To Definition (OAS)',
-        command: 'api-workbench:go-to-definition'
+        command: 'aml-workbench:go-to-definition'
       },
       {
         label: 'Rename RAML Element',
-        command: 'api-workbench:rename'
+        command: 'aml-workbench:rename'
       },
       {
         label: 'Find usages',
-        command:  'api-workbench:find-usages'
+        command:  'aml-workbench:find-usages'
       }
     ]
 
   'atom-text-editor[data-grammar="source raml"]': [
     {
       label: 'Go To Definition (RAML)',
-      command: 'api-workbench:go-to-definition'
+      command: 'aml-workbench:go-to-definition'
     },
     {
       label: 'Rename RAML Element',
-      command: 'api-workbench:rename'
+      command: 'aml-workbench:rename'
     },
     {
       label: 'Find usages',
-      command:  'api-workbench:find-usages'
+      command:  'aml-workbench:find-usages'
     }
   ]
 
   'atom-text-editor[data-grammar="source sjson"]': [
       {
         label: 'Go To Definition (OAS)',
-        command: 'api-workbench:go-to-definition'
+        command: 'aml-workbench:go-to-definition'
       },
       {
         label: 'Rename RAML Element',
-        command: 'api-workbench:rename'
+        command: 'aml-workbench:rename'
       },
       {
         label: 'Find usages',
-        command:  'api-workbench:find-usages'
+        command:  'aml-workbench:find-usages'
       }
     ]
 'menu': [
@@ -70,25 +70,25 @@
         'submenu': [
           {
             'label': 'Create RAML Project',
-            'command': 'api-workbench:new-project'
+            'command': 'aml-workbench:new-project'
           },
           {
             type: 'separator'
           },
           {
             'label': 'Open RAML Editor Tools',
-            'command': 'api-workbench:editor-tools'
+            'command': 'aml-workbench:editor-tools'
           },
           {
             type: 'separator'
           },
           {
             'label': 'Go To Definition',
-            'command': 'api-workbench:go-to-definition'
+            'command': 'aml-workbench:go-to-definition'
           },
           {
             'label': 'Find usages',
-            'command': 'api-workbench:find-usages'
+            'command': 'aml-workbench:find-usages'
           }
         ]
       }

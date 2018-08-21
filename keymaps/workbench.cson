@@ -1,6 +1,6 @@
 'atom-workspace':
-  'ctrl-alt-o': 'api-workbench:go-to-definition'
-  'ctrl-u': 'api-workbench:find-usages'
-  'ctrl-alt-e':'api-workbench:quick-fix'
-  'ctrl-o':'api-workbench:quick-outline'
-  'ctrl-q':'api-workbench:quick-commands'
+  'ctrl-alt-o': 'aml-workbench:go-to-definition'
+  'ctrl-u': 'aml-workbench:find-usages'
+  'ctrl-alt-e':'aml-workbench:quick-fix'
+  'ctrl-o':'aml-workbench:quick-outline'
+  'ctrl-q':'aml-workbench:quick-commands'

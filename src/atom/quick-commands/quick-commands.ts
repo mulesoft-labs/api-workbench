@@ -118,5 +118,5 @@ export function showCommands() {
  */
 export function registerCommands() {
 	cc.registerQuickCommands(manager());
-	cm.add('api-workbench:editor-tools', 'Show Editor Tools', ()=>et.initEditorTools(), ()=>et.editorToolsStatus() == false);
+	cm.add('aml-workbench:editor-tools', 'Show Editor Tools', ()=>et.initEditorTools(), ()=>et.editorToolsStatus() == false);
 }
