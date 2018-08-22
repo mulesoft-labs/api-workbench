@@ -35,8 +35,13 @@ function tryUpdateGrammarForLanguage(editor: AtomCore.IEditor, extension: string
 }
 
 export function isSwaggerJson(editor: AtomCore.IEditor): boolean {
-    if(JSON.parse(editor.getText()).swagger) {
-        return true;
+
+    try {
+        if(JSON.parse(editor.getText()).swagger) {
+            return true;
+        }
+    } catch (Err) {
+        return false
     }
     
     return false;
