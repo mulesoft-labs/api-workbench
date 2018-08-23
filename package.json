@@ -1,6 +1,6 @@
 {
   "name": "aml-workbench",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "AML Workbench",
   "private": true,
   "main": "./src/atom/main",
