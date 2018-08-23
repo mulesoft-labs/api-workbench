@@ -92,7 +92,7 @@
     "typings": "^0.6.8",
     "webpack": "1.15.0",
     "node-libs-browser": "^0.5.2",
-    "typescript": "2.5.2",
+    "typescript": "2.8.4",
     "dev-env-installer":"0.0.6",
     "run-sequence":"1.0.0"
   }
