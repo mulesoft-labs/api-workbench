@@ -1,6 +1,6 @@
 {
   "name": "aml-workbench",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "AML Workbench",
   "private": true,
   "main": "./src/atom/main",
@@ -68,7 +68,7 @@
     "xmlhttprequest": "^1.7.0",
     "xtend": "^4.0.1",
     "shortid": "^2.2.6",
-    "api-language-server" : "0.0.12",
+    "api-language-server" : "0.0.13",
     "promise-polyfill": "6.0.2"
   },
   "devDependencies": {
