@@ -48,7 +48,7 @@ export function isSwaggerJson(editor: AtomCore.IEditor): boolean {
 }
 
 export function isSwaggerYaml(editor: AtomCore.IEditor): boolean {
-    if(editor.getText().trim().indexOf("swagger:") == 0) {
+    if(editor.getText().trim().indexOf("swagger:") >= 0) {
         return true;
     }
     
