@@ -4,5 +4,5 @@
  * @returns {RegExpMatchArray}
  */
 export function isRAMLUnit(contents: string) {
-    return contents.match(/^(\s*#%RAML\s+(\d\.\d)\s*(\w*)\s*)|(swagger.*)$/m);
+    return contents.match(/^(\s*#%RAML\s+(\d\.\d)\s*(\w*)\s*)|^(\s*#%.+\s+(\d\.\d)\s*(\w*)\s*)|(swagger.*)$/m);
 }

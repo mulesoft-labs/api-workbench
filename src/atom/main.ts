@@ -81,7 +81,7 @@ module package_entry_point {
         grammars: {
             type: 'array',
             default: [
-                'source.raml', 'source.syaml', 'source.sjson'
+                'source.raml', 'source.yaml', 'source.syaml', 'source.sjson'
             ]
         },
         openConsoleInSplitPane: {

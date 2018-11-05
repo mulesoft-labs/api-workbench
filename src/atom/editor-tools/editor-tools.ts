@@ -304,7 +304,7 @@ class EditorManager{
         
         var extName = path.extname(editorPath);
         
-        if(extName !== '.raml' && extName !== '.yaml') {
+        if(extName !== '.raml' && extName !== '.yaml' && extName !== '.yml') {
             return false;
         }
         

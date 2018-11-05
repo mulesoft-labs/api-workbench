@@ -12,7 +12,7 @@ import _ = require('underscore');
 import ramlServer = require("api-language-server");
 // import sharedAstInitializerInterfaces = require('../shared-ast-initializer-interfaces');
 
-export var selector= '.source.raml, .source.sjson, .source.syaml'
+export var selector= '.source.raml, .source.sjson, .source.syaml, .source.yaml'
 export var disableForSelector= '.text.html .comment'
 export var filterSuggestions= true
 export var inclusionPriority= 1

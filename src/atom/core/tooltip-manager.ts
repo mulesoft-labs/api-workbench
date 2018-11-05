@@ -110,7 +110,7 @@ function getEditorPositionForBufferPosition(editor, bufferPos) {
     return buffer.characterIndexForPosition(bufferPos);
 }
 export function isAllowedExtension(ext) {
-    return (ext == '.raml' || ext == '.yaml');
+    return (ext == '.raml' || ext == '.yaml' || ext == '.yml');
 }
 
 export function attach(editorView, editor:AtomCore.IEditor) {

@@ -16,7 +16,7 @@ import ramlServer = require("api-language-server")
 
 import grammarDetect = require("../grammar-detect");
 
-export var grammarScopes = ['source.raml', 'source.syaml', 'source.sjson'];
+export var grammarScopes = ['source.raml', 'source.yaml', 'source.syaml', 'source.sjson'];
 
 export var scope = 'file';
 
