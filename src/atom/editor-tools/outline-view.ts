@@ -54,8 +54,12 @@ export class RamlOutline extends SC.Scrollable {
         });
         this._viewers = [];
 
-        if (structure)
-            this._viewers = [0, 1, 2, 3].map(i=> <UI.TreeViewer<any, any>> this._rs.get(i).content);
+        if (structure) {
+            let range: number[] = []
+            for(let i = 0 ; i < this._rs.tabsCount(); range.push(i++)){}
+
+            this._viewers = range.map(i => <UI.TreeViewer<any, any>> this._rs.get(i).content);
+        }
     }
 
     private _viewers: UI.TreeViewer<any,any>[];
@@ -83,9 +87,11 @@ export class RamlOutline extends SC.Scrollable {
         if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.ResourcesCategory]) return 0;
         if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.SchemasAndTypesCategory]) return 1;
         if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.ResourceTypesAndTraitsCategory]) return 2;
-        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory]) return 3;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.DeclaresCategory]) return 3;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.EncodesCategory]) return 4;
+        if (node.category == ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory]) return 5;
 
-        return 3;
+        return 5;
     }
 
     private _selectedNode: ramlServer.StructureNodeJSON;
@@ -207,6 +213,8 @@ enum HLNodeType {
     Schema,
     Type,
     Trait,
+    Encodes,
+    Declares,
     Unknown
 }
 
@@ -268,6 +276,10 @@ export function createTree(structure:{[categoryName: string]: ramlServer.Structu
     var traitsModel = structure[ramlServer.StructureCategories[ramlServer.StructureCategories.ResourceTypesAndTraitsCategory]];
     var otherModel = structure[ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory]];
 
+    let declaresModel = structure[ramlServer.StructureCategories[ramlServer.StructureCategories.DeclaresCategory]];
+
+    let encodesModel = structure[ramlServer.StructureCategories[ramlServer.StructureCategories.EncodesCategory]];
+
     // var resourcesModel = p!=null?ramlOutline.getStructure(outlineCommon.ResourcesCategory):null;
     // var typesModel = p!=null?ramlOutline.getStructure(outlineCommon.SchemasAndTypesCategory):null;
     // var traitsModel = p!=null?ramlOutline.getStructure(outlineCommon.ResourceTypesAndTraitsCategory):null;
@@ -282,16 +294,30 @@ export function createTree(structure:{[categoryName: string]: ramlServer.Structu
     var other  = otherModel!=null? simpleTree(otherModel, { selectionChanged: selectionListener },
             ramlServer.StructureCategories[ramlServer.StructureCategories.OtherCategory], opener):null;
 
+    var declares = declaresModel!=null? simpleTree(declaresModel, { selectionChanged: selectionListener },
+        ramlServer.StructureCategories[ramlServer.StructureCategories.DeclaresCategory], opener):null;
+
+    var encodes = encodesModel!=null? simpleTree(encodesModel, { selectionChanged: selectionListener },
+        ramlServer.StructureCategories[ramlServer.StructureCategories.EncodesCategory], opener):null;
+
     var folder = new UI.TabFolder();
 
-    folder.add("Resources",
-        UI.Icon.SEARCH, outline, 'raml-icon-custom');
-    folder.add("Schemas&Types",
-        UI.Icon.SEARCH, schemas, 'raml-icon-custom');
-    folder.add("ResourceTypes&Traits",
-        UI.Icon.SEARCH, types, 'raml-icon-custom');
-    folder.add("Other",
-        UI.Icon.SEARCH, other, 'raml-icon-custom');
+    if(encodes != null || declares != null){
+        folder.add("Declares",
+            UI.Icon.SEARCH, declares, 'raml-icon-custom');
+        folder.add("Encodes",
+            UI.Icon.SEARCH, encodes, 'raml-icon-custom');
+    }
+    else {
+        folder.add("Resources",
+            UI.Icon.SEARCH, outline, 'raml-icon-custom');
+        folder.add("Schemas&Types",
+            UI.Icon.SEARCH, schemas, 'raml-icon-custom');
+        folder.add("ResourceTypes&Traits",
+            UI.Icon.SEARCH, types, 'raml-icon-custom');
+        folder.add("Other",
+            UI.Icon.SEARCH, other, 'raml-icon-custom');
+    }
 
     folder.setSelectedIndex(0)
 
